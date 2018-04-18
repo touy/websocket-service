@@ -31,9 +31,10 @@ export class AppComponent {
   private message = this._client;
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
-    // if (!this._client.data['user'] || this._client.data['user'] === undefined) {
-    //   this._client.data['user'] = {};
-    // }
+    console.log('init');
+    if (!this._client.data['user'] || this._client.data['user'] === undefined) {
+      this._client.data['user'] = {};
+    }
 
   }
   constructor(private chatService: ChatService) {
@@ -85,9 +86,18 @@ export class AppComponent {
           }
           console.log(msg);
         } else {
+          const u = JSON.parse (JSON.stringify(msg.data['user']));
           this._client = msg;
           console.log('return from server');
+          console.log(msg);
           switch (this._client.data['command']) {
+            case 'heart-beat':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                console.log(this._client.data['message']);
+              } else {
+                this._client.data['user'] = u;
+              }
+            break;
             case 'ping':
               console.log('ping');
               alert(this._client.data['message']);
@@ -263,14 +273,16 @@ export class AppComponent {
   }
 
    changePassword() {
-    this._client.data = {};
     // this._client.data['user'] = {};
     this._client.data['command'] = 'change-password';
+    // console.log(this._client);
+    // alert(this._client.data['user']);
     this._client.data['user'].username = this._client.username;
     // this._client.data['user'].oldpassword = $("#oldPassword").val();
     // this._client.data['user'].newpassword = $("#newPassword").val();
     // this._client.data['user'].confirmpassword = $("#confirmPassword").val();
     // this._client.data['user'].phonenumber = $("#phone").val();
+    alert('before change==> ' + JSON.stringify(this._client.data['user']));
     if (this._client.logintoken) {
       this.sendMsg();
     } else { return alert('login first'); }

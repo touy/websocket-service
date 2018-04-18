@@ -1,30 +1,30 @@
 <h1>
-    SHAKE HANDS
-    <button (click)="ping_test()"> Ping Test</button>
+  SHAKE HANDS
+  <button (click)="ping_test()"> Ping Test</button>
 </h1>
 <h1>
-    SHAKE HANDS
-    <button (click)="shakeHands()"> shake hands</button>
+  SHAKE HANDS
+  <button (click)="shakeHands()"> shake hands</button>
 </h1>
 <h1>
-    Login
-  </h1>
-    <button (click)="login()">Login</button>
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="loginUsername">Username</label>
-        <div class="col-md-4">
-            <input [value]="_client.data['user'].username"
-            (input)="_client.data['user'].username=$event.target.value"  id="loginUsername" name="loginUsername" type="text" placeholder="Username" class="form-control input-md" required>
-        </div>
-    </div>
-    <!-- Text input-->
-    <div class="form-group">
-        <label class="col-md-4 control-label" for="password">password</label>
-        <div class="col-md-4">
-            <input id="loginPassword" [value]="_client.data['user'].password"
-            (input)="_client.data['user'].password=$event.target.value" name="loginPassword" type="password" placeholder="password" class="form-control input-md" required>
-        </div>
-    </div>
+  Login
+</h1>
+<button (click)="login()">Login</button>
+<div class="form-group">
+  <label class="col-md-4 control-label" for="loginUsername">Username</label>
+  <div class="col-md-4">
+    <input [value]="_client.data['user'].username===undefined?'':_client.data['user'].username" (input)="_client.data['user'].username=$event.target.value"
+      id="loginUsername" name="loginUsername" type="text" placeholder="Username" class="form-control input-md" required>
+  </div>
+</div>
+<!-- Text input-->
+<div class="form-group">
+  <label class="col-md-4 control-label" for="password">password</label>
+  <div class="col-md-4">
+    <input id="loginPassword" [value]="_client.data['user'].password===undefined?'':_client.data['user'].password" (input)="_client.data['user'].password=$event.target.value"
+      name="loginPassword" type="password" placeholder="password" class="form-control input-md" required>
+  </div>
+</div>
 
 <h1>
   GET USER GUI
@@ -32,62 +32,72 @@
 </h1>
 
 <h1>
-    logout
-    <button (click)="logout()"> logout</button>
-  </h1>
+  logout
+  <button (click)="logout()"> logout</button>
+</h1>
 
 <h1>
-    Get user details 
-    <textarea cols="60" rows="9" [(ngModel)]="_currentUserdetail">
+  Get user details
+  <textarea cols="60" rows="9" [(ngModel)]="_currentUserdetail">
 
-    </textarea>
-    <br/>
-    <button (click)="getUserDetails()"> get user details</button>
-    <button (click)="updateUserDetails()"> update details</button>
-  </h1>
+  </textarea>
+  <br/>
+  <button (click)="getUserDetails()"> get user details</button>
+  <button (click)="updateUserDetails()"> update details</button>
+</h1>
+<div>
+
   <h1>
     Change password
-    
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="oldPassword">old password</label>
-                    <div class="col-md-4">
-                        <input id="oldPassword" name="oldPassword"
-                        (value)="_client.data['user'].oldPassword" type="password" placeholder="password" class="form-control input-md" required>
-                    </div>
-                </div>
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="newPassword">new password</label>
-                    <div class="col-md-4">
-                        <input id="newPassword" name="newPassword" 
-                        (value)="_client.data['user'].newpassword"
-                        type="password" placeholder="new password" class="form-control input-md" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="confirmPassword"> confirm password</label>
-                    <div class="col-md-4">
-                        <input id="confirmPassword" name="confirmPassword"
-                        (value)="_client.data['user'].confirmPassword" type="password" placeholder="confirm password" class="form-control input-md"
-                            required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="phone"> phone number</label>
-                    <div class="col-md-4">
-                        <input id="phone" name="phone" 
-                        (value)="_client.data['user'].phonenumber"
-                        type="number" placeholder="phonenumber" class="form-control input-md" required>
-                    </div>
-                </div>
-
-                <!-- Button -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="btnChangePassword"></label>
-                    <div class="col-md-4">
-                        <button id="btnChangePassword" name="btnChangePassword" (click)='changePassword()' class="btn btn-primary">change password</button>
-                    </div>
-                </div>
-
   </h1>
+
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="oldPassword">old password</label>
+    <div class="col-md-4">
+      <input id="oldPassword" name="oldPassword" 
+      (value)="_client.data['user'].oldpassword" 
+      (input)="_client.data['user'].oldpassword=$event.target.value"
+      type="password" placeholder="password"
+        class="form-control input-md" required>
+    </div>
+  </div>
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="newPassword">new password</label>
+    <div class="col-md-4">
+      <input id="newPassword" name="newPassword" (value)="_client.data['user'].newpassword"
+      (input)="_client.data['user'].newpassword=$event.target.value"
+      type="password" placeholder="new password"
+        class="form-control input-md" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="confirmPassword"> confirm password</label>
+    <div class="col-md-4">
+      <input id="confirmPassword" name="confirmPassword" 
+      (value)="_client.data['user'].confirmpassword"
+      (input)="_client.data['user'].confirmpassword=$event.target.value"
+      type="password" placeholder="confirm password"
+        class="form-control input-md" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="phone"> phone number</label>
+    <div class="col-md-4">
+      <input id="phone" name="phone" (value)="_client.data['user'].phonenumber" 
+      (input)="_client.data['user'].phonenumber=$event.target.value"
+      type="number" placeholder="phonenumber" class="form-control input-md"
+        required>
+    </div>
+  </div>
+
+  <!-- Button -->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="btnChangePassword"></label>
+    <div class="col-md-4">
+      <button id="btnChangePassword" name="btnChangePassword" (click)='changePassword()' class="btn btn-primary">change password</button>
+    </div>
+  </div>
+
+</div>
