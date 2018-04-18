@@ -45,3 +45,49 @@
     <button (click)="getUserDetails()"> get user details</button>
     <button (click)="updateUserDetails()"> update details</button>
   </h1>
+  <h1>
+    Change password
+    
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="oldPassword">old password</label>
+                    <div class="col-md-4">
+                        <input id="oldPassword" name="oldPassword"
+                        (value)="_client.data['user'].oldPassword" type="password" placeholder="password" class="form-control input-md" required>
+                    </div>
+                </div>
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="newPassword">new password</label>
+                    <div class="col-md-4">
+                        <input id="newPassword" name="newPassword" 
+                        (value)="_client.data['user'].newpassword"
+                        type="password" placeholder="new password" class="form-control input-md" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="confirmPassword"> confirm password</label>
+                    <div class="col-md-4">
+                        <input id="confirmPassword" name="confirmPassword"
+                        (value)="_client.data['user'].confirmPassword" type="password" placeholder="confirm password" class="form-control input-md"
+                            required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="phone"> phone number</label>
+                    <div class="col-md-4">
+                        <input id="phone" name="phone" 
+                        (value)="_client.data['user'].phonenumber"
+                        type="number" placeholder="phonenumber" class="form-control input-md" required>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="btnChangePassword"></label>
+                    <div class="col-md-4">
+                        <button id="btnChangePassword" name="btnChangePassword" (click)='changePassword()' class="btn btn-primary">change password</button>
+                    </div>
+                </div>
+
+  </h1>

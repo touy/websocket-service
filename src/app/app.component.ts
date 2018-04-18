@@ -262,18 +262,19 @@ export class AppComponent {
     } else { return alert('login first'); }
   }
 
-  //  changePassword() {
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   this._client.data['command'] = 'change-password';
-  //   this._client.data['user'].username = this._client.username;
-  //   this._client.data['user'].oldpassword = $("#oldPassword").val();
-  //   this._client.data['user'].newpassword = $("#newPassword").val();
-  //   this._client.data['user'].confirmpassword = $("#confirmPassword").val();
-  //   this._client.data['user'].phonenumber = $("#phone").val();
-  //   alert(JSON.stringify(this._client));
-  //   this.sendMsg();
-  // }
+   changePassword() {
+    this._client.data = {};
+    // this._client.data['user'] = {};
+    this._client.data['command'] = 'change-password';
+    this._client.data['user'].username = this._client.username;
+    // this._client.data['user'].oldpassword = $("#oldPassword").val();
+    // this._client.data['user'].newpassword = $("#newPassword").val();
+    // this._client.data['user'].confirmpassword = $("#confirmPassword").val();
+    // this._client.data['user'].phonenumber = $("#phone").val();
+    if (this._client.logintoken) {
+      this.sendMsg();
+    } else { return alert('login first'); }
+  }
 
   //  register() {
   //   this._client.data = {};
