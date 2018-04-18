@@ -1,0 +1,47 @@
+<h1>
+    SHAKE HANDS
+    <button (click)="ping_test()"> Ping Test</button>
+</h1>
+<h1>
+    SHAKE HANDS
+    <button (click)="shakeHands()"> shake hands</button>
+</h1>
+<h1>
+    Login
+  </h1>
+    <button (click)="login()">Login</button>
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="loginUsername">Username</label>
+        <div class="col-md-4">
+            <input [value]="_client.data['user'].username"
+            (input)="_client.data['user'].username=$event.target.value"  id="loginUsername" name="loginUsername" type="text" placeholder="Username" class="form-control input-md" required>
+        </div>
+    </div>
+    <!-- Text input-->
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="password">password</label>
+        <div class="col-md-4">
+            <input id="loginPassword" [value]="_client.data['user'].password"
+            (input)="_client.data['user'].password=$event.target.value" name="loginPassword" type="password" placeholder="password" class="form-control input-md" required>
+        </div>
+    </div>
+
+<h1>
+  GET USER GUI
+  <button (click)="get_user_gui()"> get user gui</button>
+</h1>
+
+<h1>
+    logout
+    <button (click)="logout()"> logout</button>
+  </h1>
+
+<h1>
+    Get user details 
+    <textarea cols="60" rows="9" [(ngModel)]="_currentUserdetail">
+
+    </textarea>
+    <br/>
+    <button (click)="getUserDetails()"> get user details</button>
+    <button (click)="updateUserDetails()"> update details</button>
+  </h1>
