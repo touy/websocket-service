@@ -1,11 +1,16 @@
-<h1>
-  SHAKE HANDS
+<div>
+  <h1>
+    PING TEST
+  </h1>
   <button (click)="ping_test()"> Ping Test</button>
-</h1>
-<h1>
-  SHAKE HANDS
+</div>
+<div>
+  <h1>
+      SHAKE HANDS
+  </h1>
+  
   <button (click)="shakeHands()"> shake hands</button>
-</h1>
+</div>
 <h1>
   Login
 </h1>
@@ -26,25 +31,34 @@
   </div>
 </div>
 
-<h1>
-  GET USER GUI
+<div>
+  
+  <h1>
+      GET USER GUI
+  </h1>
   <button (click)="get_user_gui()"> get user gui</button>
-</h1>
+</div>
 
-<h1>
-  logout
-  <button (click)="logout()"> logout</button>
-</h1>
+<div>
+    <h1>
+        logout
+      </h1>
+        <button (click)="logout()"> logout</button>
+</div>
 
-<h1>
-  Get user details
-  <textarea cols="60" rows="9" [(ngModel)]="_currentUserdetail">
 
-  </textarea>
-  <br/>
-  <button (click)="getUserDetails()"> get user details</button>
-  <button (click)="updateUserDetails()"> update details</button>
-</h1>
+<div>
+    <h1>
+        Get user details
+      </h1>
+        <textarea cols="60" rows="9" [(ngModel)]="_currentUserdetail">
+      
+        </textarea>
+        <br/>
+        <button (click)="getUserDetails()"> get user details</button>
+        <button (click)="updateUserDetails()"> update details</button>      
+</div>
+
 <div>
 
   <h1>
@@ -99,5 +113,79 @@
       <button id="btnChangePassword" name="btnChangePassword" (click)='changePassword()' class="btn btn-primary">change password</button>
     </div>
   </div>
+
+</div>
+
+<div>
+  <h1>
+    Register
+  </h1>
+  
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="username">Username</label>
+                    <div class="col-md-4">
+                        <input id="username" name="username"
+                        (value)="_client.data['user'].username" 
+                        (input)="_client.data['user'].username=$event.target.value"
+                        type="text" placeholder="Username" class="form-control input-md" required>
+                    </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="phonenumber">phonenumber (+856)</label>
+                    <div class="col-md-4">
+                        <input id="phonenumber" name="phonenumber"
+                        (value)="_client.data['user'].phonenumber" 
+                        (input)="_client.data['user'].phonenumber=$event.target.value"
+                        type="number" maxlength="10" placeholder="phonenumber: 205 or 209" class="form-control input-md"
+                            required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="rpassword">password</label>
+                    <div class="col-md-4">
+                        <input id="rpassword" name="rpassword" 
+                        (value)="_client.data['user'].password" 
+                        (input)="_client.data['user'].password=$event.target.value"
+                        type="password" placeholder="password" class="form-control input-md" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="rconfirmpassword">confirm password</label>
+                    <div class="col-md-4">
+                        <input id="rconfirmpassword" 
+                        (value)="_client.data['user'].confirmpassword" 
+                        (input)="_client.data['user'].confirmpassword=$event.target.value"
+                        name="rconfirmpassword" type="password" placeholder="confirm password" class="form-control input-md"
+                            required>
+                    </div>
+                </div>
+                <!-- Text input-->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="secret">secret</label>
+                    <div class="col-md-2">
+                        <input id="secret" name="secret" maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="btnGetSecret"></label>
+                    <div class="col-md-4">
+                        <button id="btnGetSecret" onclick="return false;" name="btnGetSecret" class="btn btn-info">get secret</button>
+                    </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                    <label class="col-md-4 control-label" for="submit"></label>
+                    <div class="col-md-4">
+                        <button id="submit" name="submit" class="btn btn-primary">submit</button>
+                    </div>
+                </div>
+
+
 
 </div>

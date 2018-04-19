@@ -288,20 +288,20 @@ export class AppComponent {
     } else { return alert('login first'); }
   }
 
-  //  register() {
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   this._client.data['command'] = 'register';
-  //   this._client.data['user'].username = $("#username").val();
-  //   this._client.data['user'].phonenumber = $("#phonenumber").val();
-  //   this._client.data['secret'] = $("#secret").val();
-  //   this._client.data['user'].password = $("#rpassword").val();
-  //   this._client.data['user'].confirmpassword = $("#rconfirmpassword").val();
+   register() {
+    this._client.data = {};
+    this._client.data['user'] = {};
+    this._client.data['command'] = 'register';
+    // this._client.data['user'].username = $("#username").val();
+    // this._client.data['user'].phonenumber = $("#phonenumber").val();
+    // this._client.data['secret'] = $("#secret").val();
+    // this._client.data['user'].password = $("#rpassword").val();
+    // this._client.data['user'].confirmpassword = $("#rconfirmpassword").val();
 
-  //   console.log('before sending register');
-  //   alert(JSON.stringify(this._client));
-  //   this.sendMsg();
-  // }
+    console.log('before sending register');
+    alert(JSON.stringify(this._client));
+    this.sendMsg();
+  }
 
   //  checkUsername() {
   //   this._client.data = {};
