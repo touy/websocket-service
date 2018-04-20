@@ -7,12 +7,12 @@ import {DOCUMENT} from '@angular/platform-browser';
 let CHAT_URL = 'ws://nonav.net:6688/'; // user web service
 
 export interface Message {
+  gui: string;
   username: string;
   logintoken: string;
   logintime: string;
   loginip: string;
-  data: {
-  };
+  data: any;
 }
 
 @Injectable()
