@@ -115,8 +115,8 @@ export class AppComponent {
     this.clearJSONValue(this._currentUserdetail);
   }
   register() {
-    this.websocketDataServiceService.changePassword(this._newUser);
-    // this.clearJSONValue(this._newUser);
+    this.websocketDataServiceService.register(this._newUser);
+    this.clearJSONValue(this._newUser);
   }
   getSecret() {
     this.websocketDataServiceService.getSecret(this._newUser);
@@ -134,5 +134,17 @@ export class AppComponent {
   checkPhoneNumber() {
     this.websocketDataServiceService.checkPhoneNumber(this._newUser);
   }
-
+  getSMSConfirm() {
+    this.websocketDataServiceService.send_confirm_phone_sms(this._currentUserdetail);
+  }
+  checkSMSConfirm(){
+    if (this._newUser.data['secret'] !== undefined) {
+      if (this._newUser.data['secret'].length === 6) {
+        this.websocketDataServiceService.check_confirm_phone_sms(this._newUser);
+      }
+    }
+  }
+  confirmChangePhonenumber() {
+    this.websocketDataServiceService.update_confirm_phone(this._newUser.data);
+  }
 }

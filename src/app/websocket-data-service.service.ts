@@ -222,7 +222,7 @@ export class WebsocketDataServiceService implements OnInit {
                 this.refreshNewUserMessage();
               }
               break;
-              case 'get-secret':
+            case 'get-secret':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
@@ -230,12 +230,28 @@ export class WebsocketDataServiceService implements OnInit {
                 this.refreshNewUserMessage();
               }
               break;
-              case 'register':
+            case 'register':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
                 this._newUser.data = this._client.data;
                 this.refreshNewUserMessage();
+              }
+              break;
+              case 'send-confirm-phone-sms':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                console.log(this._client.data['message']);
+              } else {
+                this._currentUserdetail = this._client.data['user'];
+                this.refreshUserDetails();
+              }
+              break;
+              case 'check-confirm-phone-sms':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                console.log(this._client.data['message']);
+              } else {
+                this._currentUserdetail = this._client.data['user'];
+                this.refreshUserDetails();
               }
               break;
             default:
@@ -341,11 +357,11 @@ export class WebsocketDataServiceService implements OnInit {
     } else { return alert('login first'); }
   }
 
-  register(data) {
+  register(newuser) {
     this._message = JSON.parse(JSON.stringify(this._client));
     console.log('before sending register');
     this._message.data = {};
-    this._message.data = data;
+    this._message.data = newuser.data;
     this._message.data['command'] = 'register';
     this.sendMsg();
   }
@@ -407,31 +423,37 @@ export class WebsocketDataServiceService implements OnInit {
     } else { alert('User is undefined'); }
   }
 
-  //  send_confirm_phone_sms(phone) {
-  //   phonesize = phone.length;
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   console.log(phone.indexOf('205'));
-  //   LTC = phone.indexOf('205');
-  //   UNI = phone.indexOf('209');
-  //   if (phonesize < 10 || phonesize > 10)
-  //     return alert('phone must start with 205 or 209 and 10 digit in total');
-  //   if (LTC < 0 && UNI < 0)
-  //     return alert('we support only LAOTEL and UNITEL number only');
-  //   this._client.data['command'] = 'send-confirm-phone-sms';
-  //   this._client.data['user'].phonenumber = phone;
-  //   this.sendMsg();
-  // }
+  send_confirm_phone_sms(user) {
+    const phonesize = user.phonenumber.length;
+    console.log(user.phonenumber.indexOf('205'));
+    const LTC = user.phonenumber.indexOf('205');
+    const UNI = user.phonenumber.indexOf('209');
+    if (phonesize < 10 || phonesize > 10) {
+      return alert('phone must start with 205 or 209 and 10 digit in total');
+    }
+    if (LTC < 0 && UNI < 0) {
+      return alert('we support only LAOTEL and UNITEL number only');
+    }
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data['command'] = 'send-confirm-phone-sms';
+    this._message.data['user'] = user;
+    this.sendMsg();
+  }
 
-  //  check_confirm_phone_sms() {
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   this._client.data['command'] = 'check-confirm-phone-sms';
-  //   this._client.data['user'].phonenumber = $('#cPhoneNumber').val();
-  //   this._client.data['secret'] = $('#csecret').val();
-  //   //this._client.data['user'].phonenumber=phone;
-  //   this.sendMsg();
-  // }
+  check_confirm_phone_sms(data) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = data;
+    this._message.data['command'] = 'check-confirm-phone-sms';
+    // this._client.data['user'].phonenumber=phone;
+    this.sendMsg();
+  }
+  update_confirm_phone(user) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data['user'] = user;
+    this._message.data['command'] = 'update-confirm-phone-sms';
+    // this._client.data['user'].phonenumber=phone;
+    this.sendMsg();
+  }
 
   //  checkForgot() {
   //   this._client.data = {};
