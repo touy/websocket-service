@@ -316,7 +316,7 @@
                           <input id="secret" name="secret"
                           [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']"
                           (input)="_newUser.data['secret']=$event.target.value"
-                          (keyup)="checkSecret($event)"
+                          (keyup)="checkSMSConfirm($event)"
                           maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
                       </div>
                   </div>

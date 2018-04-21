@@ -137,7 +137,7 @@ export class AppComponent {
   getSMSConfirm() {
     this.websocketDataServiceService.send_confirm_phone_sms(this._currentUserdetail);
   }
-  checkSMSConfirm(){
+  checkSMSConfirm() {
     if (this._newUser.data['secret'] !== undefined) {
       if (this._newUser.data['secret'].length === 6) {
         this.websocketDataServiceService.check_confirm_phone_sms(this._newUser);
