@@ -138,7 +138,7 @@
                     <label class="col-md-4 control-label" for="username">Username</label>
                     <div class="col-md-4">
                         <input id="username" name="username"
-                        (value)="_newUser.data['user'].username===undefined? '' : _newUser.data['user'].username"  
+                        (value)="_newUser.data['user']===undefined? '' : _newUser.data['user'].username"  
                         (input)="_newUser.data['user'].username=$event.target.value"
                         type="text" placeholder="Username" class="form-control input-md" required>
                     </div>

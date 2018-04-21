@@ -34,7 +34,7 @@ export class AppComponent {
     this.websocketDataServiceService.clientSource.subscribe(client => {
       this._client = client;
       if (this._client.data['user'] !== undefined) {
-        alert('client update ' + this._client.data.user['message']);
+        /// alert('client update ' + this._client.data.user['message']);
       }
     });
     this.websocketDataServiceService.newUserSource.subscribe(client => {
@@ -66,12 +66,14 @@ export class AppComponent {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this._newUser = JSON.parse(JSON.stringify(this._client));
+    this._newUser.data = {};
+    this._newUser.data.user = {};
     this._message = JSON.parse(JSON.stringify(this._client));
     this._currentUserdetail = {};
     this._userDetailsStr = '';
-    this._otherMessage = {};    
+    this._otherMessage = {};
   }
-  
+
   showNewMessage() {
     this._client.data.message = 'changed from show message';
     this.websocketDataServiceService.changeMessage(this._client);
