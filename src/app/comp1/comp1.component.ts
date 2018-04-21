@@ -65,7 +65,7 @@ export class Comp1Component implements OnInit, OnDestroy {
     // }, 1000*3);
   }
   ngOnDestroy() {
-    this.websocketDataServiceService.stopService();
+    // this.websocketDataServiceService.stopService();
     // this.websocketDataServiceService.stopService();
     // this.websocketDataServiceService.clientSource.unsubscribe();
     // this.websocketDataServiceService.currentUserSource.unsubscribe();

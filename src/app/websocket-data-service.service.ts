@@ -32,15 +32,16 @@ export class WebsocketDataServiceService implements OnInit {
   // private serverEvent = this.eventSource.asObservable();
   heartbeat_interval = setInterval(() => {
     const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
-    if (this.heartbeat_interval === undefined) {
-      return;
-    }
-    if (firstHeartBeat) {
+    // if (this.heartbeat_interval === undefined) {
+    //   return;
+    // }
+    console.log('first heart beat' + firstHeartBeat);
+    if (firstHeartBeat !== this.heartbeat_interval + '' && firstHeartBeat) {
       this.stopService();
       return;
     }
     console.log('heartbeat ' + this.heartbeat_interval);
-    sessionStorage.setItem('firstHeartBeat', '1');
+    sessionStorage.setItem('firstHeartBeat', this.heartbeat_interval + '');
     // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};

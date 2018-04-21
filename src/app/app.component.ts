@@ -76,8 +76,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this._otherMessage = {};
   }
   ngOnDestroy() {
-    console.log('STOP SERVICE');
-    this.websocketDataServiceService.stopService();
+    // console.log('STOP SERVICE');
+    // this.websocketDataServiceService.stopService();
     // this._subs.array.forEach(element => {
     //   element.unsubscribe();
     // });
