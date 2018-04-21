@@ -59,7 +59,7 @@ export class Comp1Component implements OnInit, OnDestroy {
 
   ngOnInit() {
     this._client = this.websocketDataServiceService.getClient();
-    alert('client comp1 is : ' + JSON.stringify(this._client));
+    // alert('client comp1 is : ' + JSON.stringify(this._client));
     // setTimeout(() => {
     //   this.websocketDataServiceService.stopService();
     // }, 1000*3);
