@@ -16,7 +16,7 @@ export class AppComponent {
   private _newUser: any;
   private _userDetailsStr: string;
   private _server_event: any = [];
-  _client: Message = {
+  private _client: Message = {
     gui: '',
     username: '',
     logintoken: '',
@@ -24,35 +24,13 @@ export class AppComponent {
     loginip: '',
     data: {}
   };
-  _loginUser = { usrname: '', password: '' };
+  private _otherSource: any = {};
+  private _loginUser = { usrname: '', password: '' };
   private _currentUserdetail: any;
+  private _otherMessage: any = {};
+
   constructor(private websocketDataServiceService: WebsocketDataServiceService) {
 
-  }
-  // tslint:disable-next-line:use-life-cycle-interface
-  ngOnInit() {
-    this.websocketDataServiceService.messageSource.subscribe(message => {
-      this._client = message;
-    });
-    this.websocketDataServiceService.eventSource.subscribe(events => {
-      this._server_event = events;
-    });
-    this.websocketDataServiceService.currentUserSource.subscribe(user => {
-      this._currentUserdetail = user;
-      this._userDetailsStr = JSON.stringify(this._currentUserdetail);
-    });
-    this._newUser = JSON.parse(JSON.stringify(this._client));
-    this._message = JSON.parse(JSON.stringify(this._client));
-    this._currentUserdetail = {};
-  }
-  showNewMessage() {
-    this._client.data.message = 'changed from show message';
-    this.websocketDataServiceService.changeMessage(this._client);
-  }
-  ping_test() {
-    this.websocketDataServiceService.ping_test();
-    this._client.data.message += ' HERE in app component';
-    console.log(this._client);
   }
   private clearJSONValue(u) {
     for (const key in u) {
@@ -61,6 +39,48 @@ export class AppComponent {
       }
     }
   }
+  // tslint:disable-next-line:use-life-cycle-interface
+  ngOnInit() {
+    this.websocketDataServiceService.clientSource.subscribe(client => {
+      this._client = client;
+    });
+    this.websocketDataServiceService.clientSource.subscribe(client => {
+      this._newUser = client;
+    });
+    this.websocketDataServiceService.eventSource.subscribe(events => {
+      this._server_event = events;
+    });
+    this.websocketDataServiceService.currentUserSource.subscribe(user => {
+      this._currentUserdetail = user;
+      this._userDetailsStr = JSON.stringify(this._currentUserdetail);
+    });
+
+    this.websocketDataServiceService.otherSource.subscribe(msg => {
+      this._otherMessage = msg;
+    });
+    this._newUser = JSON.parse(JSON.stringify(this._client));
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._currentUserdetail = {};
+    this._otherMessage = {};
+  }
+  showNewMessage() {
+    this._client.data.message = 'changed from show message';
+    this.websocketDataServiceService.changeMessage(this._client);
+  }
+  setOtherMessage() {
+    const msg = {
+      title: '',
+      data: {},
+      other: {}, // ...
+    };
+    this.websocketDataServiceService.setOtherMessage(msg);
+  }
+  ping_test() {
+    this.websocketDataServiceService.ping_test();
+    this._client.data.message += ' HERE in app component';
+    console.log(this._client);
+  }
+
   login() {
     this.websocketDataServiceService.login(this._loginUser);
     this.clearJSONValue(this._loginUser);
@@ -69,7 +89,7 @@ export class AppComponent {
     this.websocketDataServiceService.logout();
   }
   getUserDetails() {
-    this.websocketDataServiceService.getUserDetails(this._client);
+    this.websocketDataServiceService.getUserDetails(this._client.data);
   }
   updateUserDetails() {
     this._currentUserdetail = JSON.parse(this._userDetailsStr);
@@ -83,6 +103,25 @@ export class AppComponent {
     this.websocketDataServiceService.changePassword(this._currentUserdetail);
     this.clearJSONValue(this._currentUserdetail);
   }
-
+  register() {
+    this.websocketDataServiceService.changePassword(this._newUser);
+    // this.clearJSONValue(this._newUser);
+  }
+  getSecret() {
+    this.websocketDataServiceService.getSecret(this._newUser);
+  }
+  checkSecret(event: any) {
+    if (this._newUser.data['secret'] !== undefined) {
+      if (this._newUser.data['secret'].length === 6) {
+        this.websocketDataServiceService.checkSecret(this._newUser);
+      }
+    }
+  }
+  checkUsername() {
+    this.websocketDataServiceService.checkUsername(this._newUser);
+  }
+  checkPhoneNumber() {
+    this.websocketDataServiceService.checkPhoneNumber(this._newUser);
+  }
 
 }

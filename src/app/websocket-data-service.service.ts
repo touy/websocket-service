@@ -21,12 +21,14 @@ export class WebsocketDataServiceService implements OnInit {
     loginip: '',
     data: {}
   };
-  public messageSource = new BehaviorSubject<Message>(this._client);
+  private _otherMessage: any;
+
+  public clientSource = new BehaviorSubject<Message>(this._client);
   public currentUserSource = new BehaviorSubject<any>(this._currentUserdetail);
   public eventSource = new BehaviorSubject<any>(this._server_event);
-
-  private currentMessage = this.messageSource.asObservable();
-  private serverEvent = this.eventSource.asObservable();
+  public otherSource = new BehaviorSubject<any>(this._otherMessage);
+  // private currentMessage = this.clientSource.asObservable();
+  // private serverEvent = this.eventSource.asObservable();
   heartbeat_interval = setInterval(() => {
     console.log('heartbeat');
     this._message = JSON.parse(JSON.stringify(this._client));
@@ -38,11 +40,18 @@ export class WebsocketDataServiceService implements OnInit {
   timeOut_runner = setTimeout(() => {
     this.shakeHands();
   }, 1000 * 3);
+
+  public refreshNewUserMessage() {
+    this.clientSource.next(this._newUser);
+  }
+  public refreshOtherMessage() {
+    this.otherSource.next(this._otherMessage);
+  }
   public refreshClient() {
-    this.messageSource.next(this._client);
+    this.clientSource.next(this._client);
   }
   public refreshServerEvent() {
-    this.messageSource.next(this._client);
+    this.clientSource.next(this._client);
   }
   public refreshUserDetails() {
     this.currentUserSource.next(this._currentUserdetail);
@@ -81,7 +90,6 @@ export class WebsocketDataServiceService implements OnInit {
                 console.log('check balance');
                 console.log(d['client']['data']['res'].resultDesc);
                 console.log(d['client']['data']['res'].msisdn);
-
               }
               break;
             case 'error-changed':
@@ -176,6 +184,7 @@ export class WebsocketDataServiceService implements OnInit {
                 console.log(this._client.data['message']);
               } else {
                 alert(this._client.data['message']);
+                this._currentUserdetail = this._client.data['user'];
               }
               break;
             case 'get-user-gui':
@@ -191,14 +200,41 @@ export class WebsocketDataServiceService implements OnInit {
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
-                alert(this._client.data['user'].gui);
+                // alert(this._client.data['user'].gui);
+                this._newUser.data = this._client.data;
+                this.refreshNewUserMessage();
               }
               break;
             case 'check-username':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
-                alert(this._client.data['user'].gui);
+                this._newUser.data = this._client.data;
+                this.refreshNewUserMessage();
+              }
+              break;
+            case 'check-secret':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                console.log(this._client.data['message']);
+              } else {
+                this._newUser.data = this._client.data;
+                this.refreshNewUserMessage();
+              }
+              break;
+              case 'get-secret':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                console.log(this._client.data['message']);
+              } else {
+                this._newUser.data = this._client.data;
+                this.refreshNewUserMessage();
+              }
+              break;
+              case 'register':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                console.log(this._client.data['message']);
+              } else {
+                this._newUser.data = this._client.data;
+                this.refreshNewUserMessage();
               }
               break;
             default:
@@ -215,7 +251,10 @@ export class WebsocketDataServiceService implements OnInit {
   }
   changeMessage(message: Message) {
     console.log(message.data.message);
-    this.messageSource.next(message);
+    this.clientSource.next(message);
+  }
+  setOtherMessage(msg: any) {
+    this.otherSource.next(msg);
   }
   sendMsg() {
     // this._message.data['command'] = 'ping';
@@ -268,10 +307,10 @@ export class WebsocketDataServiceService implements OnInit {
     } else { return alert('login first'); }
   }
 
-  getUserDetails(client) {
-    this._message = JSON.parse(JSON.stringify(client));
+  getUserDetails(data) {
+    this._message = JSON.parse(JSON.stringify(this._client));
     if (this._message.logintoken) {
-      this._message.data = {};
+      this._message.data = data;
       this._message.data['user'] = {};
       this._message.data['command'] = 'get-profile';
       this.sendMsg();
@@ -301,57 +340,45 @@ export class WebsocketDataServiceService implements OnInit {
     } else { return alert('login first'); }
   }
 
-  register() {
+  register(data) {
     this._message = JSON.parse(JSON.stringify(this._client));
     console.log('before sending register');
     this._message.data = {};
-    this._message.data['user'] = {};
+    this._message.data = data;
     this._message.data['command'] = 'register';
-    this._message.data = this._newUser.data;
     this.sendMsg();
   }
 
-  checkUsername() {
-    this._client.data = {};
-    this._client.data['user'] = {};
+  checkUsername(newuser) {
+    this._newUser = newuser;
     // this._client.data['command'] = 'check-username';
     // this._client.data['user'].username = $("#username").val();
-    if (this._client.data['user'] !== undefined) {
-      this._newUser.data['command'] = 'get-secret';
-      this._client.data = this._newUser.data;
+    if (this._newUser.data['user'] !== undefined) {
+      this._newUser.data['command'] = 'check-username';
       alert(JSON.stringify(this._client));
       this._message = JSON.parse(JSON.stringify(this._client));
+      this._message.data = this._newUser.data;
       this.sendMsg();
     } else { alert('User is undefined'); }
   }
 
-  //  checkPassword() {
-
-  // }
-
-  //  confirmPassword() {
-
-  // }
-
-  checkPhoneNumber() {
-    this._client.data = {};
-    this._client.data['user'] = {};
-    // this._client.data['command'] = 'check-phonenumber';
-    if (this._client.data['user'] !== undefined) {
-      this._newUser.data['command'] = 'get-secret';
-      this._client.data = this._newUser.data;
+  checkPhoneNumber(newuser) {
+    this._newUser = newuser;
+    // this._client.data['command'] = 'check-username';
+    // this._client.data['user'].username = $("#username").val();
+    if (this._newUser.data['user'] !== undefined) {
+      this._newUser.data['command'] = 'check-phonenumber';
       alert(JSON.stringify(this._client));
       this._message = JSON.parse(JSON.stringify(this._client));
+      this._message.data = this._newUser.data;
       this.sendMsg();
     } else { alert('User is undefined'); }
   }
 
-  getSecret() {
-    this._client.data = {};
-    this._client.data['user'] = {};
-    if (this._client.data['user'] !== undefined) {
+  getSecret(newuser) {
+    this._newUser = newuser;
+    if (this._newUser.data['user'] !== undefined) {
       const phonesize = this._newUser.data.user.phonenumber.length;
-      console.log(this._newUser.data.user.phonenumber.indexOf('205'));
       const LTC = this._newUser.data.user.phonenumber.indexOf('205');
       const UNI = this._newUser.data.user.phonenumber.indexOf('209');
       if (phonesize < 10 || phonesize > 10) {
@@ -361,24 +388,22 @@ export class WebsocketDataServiceService implements OnInit {
         return alert('we support only LAOTEL and UNITEL number only');
       }
       this._newUser.data['command'] = 'get-secret';
-      this._client.data = this._newUser.data;
-      alert(JSON.stringify(this._client));
+      // this._client.data = this._newUser.data;
+      alert(JSON.stringify(this._newUser));
       this._message = JSON.parse(JSON.stringify(this._client));
+      this._message.data = this._newUser.data;
       this.sendMsg();
     } else { alert('User is undefined'); }
   }
-  checkSecret(event: any) {
-    // this._client.data = {};
-    // this._client.data['user'] = {};
-    // this._client.data['command'] = 'check-secret';
-    // this._client.data['secret'] = $('#secret').val();
-    if (this._newUser.data['secret'] !== undefined) {
-      if (this._newUser.data['secret'].length === 6) {
-        this._newUser.data['command'] = 'check-secret';
-        this._client.data = this._newUser.data;
-        this.sendMsg();
-      }
-    }
+  checkSecret(newuser) {
+    this._newUser = newuser;
+    if (this._newUser.data['user'] !== undefined) {
+      this._newUser.data['command'] = 'check-secret';
+      alert(JSON.stringify(this._client));
+      this._message = JSON.parse(JSON.stringify(this._client));
+      this._message.data = this._newUser.data;
+      this.sendMsg();
+    } else { alert('User is undefined'); }
   }
 
   //  send_confirm_phone_sms(phone) {
