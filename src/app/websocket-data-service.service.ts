@@ -24,6 +24,7 @@ export class WebsocketDataServiceService implements OnInit {
   private _otherMessage: any;
 
   public clientSource = new BehaviorSubject<Message>(this._client);
+  public newUserSource = new BehaviorSubject<Message>(this._newUser);
   public currentUserSource = new BehaviorSubject<any>(this._currentUserdetail);
   public eventSource = new BehaviorSubject<any>(this._server_event);
   public otherSource = new BehaviorSubject<any>(this._otherMessage);
@@ -42,7 +43,7 @@ export class WebsocketDataServiceService implements OnInit {
   }, 1000 * 3);
 
   public refreshNewUserMessage() {
-    this.clientSource.next(this._newUser);
+    this.newUserSource.next(this._newUser);
   }
   public refreshOtherMessage() {
     this.otherSource.next(this._otherMessage);
@@ -51,7 +52,7 @@ export class WebsocketDataServiceService implements OnInit {
     this.clientSource.next(this._client);
   }
   public refreshServerEvent() {
-    this.clientSource.next(this._client);
+    this.eventSource.next(this._server_event);
   }
   public refreshUserDetails() {
     this.currentUserSource.next(this._currentUserdetail);

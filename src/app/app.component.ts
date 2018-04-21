@@ -13,8 +13,8 @@ import { WebsocketService } from './websocket.service';
 
 export class AppComponent {
   private _message: Message;
-  private _newUser: any;
-  private _userDetailsStr: string;
+  private _newUser: any = {};
+  private _userDetailsStr = '';
   private _server_event: any = [];
   private _client: Message = {
     gui: '',
@@ -26,26 +26,22 @@ export class AppComponent {
   };
   private _otherSource: any = {};
   private _loginUser = { usrname: '', password: '' };
-  private _currentUserdetail: any;
+  private _currentUserdetail: any = {};
   private _otherMessage: any = {};
 
   constructor(private websocketDataServiceService: WebsocketDataServiceService) {
 
-  }
-  private clearJSONValue(u) {
-    for (const key in u) {
-      if (u.hasOwnProperty(key)) {
-        u[key] = '';
-      }
-    }
-  }
-  // tslint:disable-next-line:use-life-cycle-interface
-  ngOnInit() {
     this.websocketDataServiceService.clientSource.subscribe(client => {
       this._client = client;
+      if (this._client.data['user'] !== undefined) {
+        alert('client update ' + this._client.data.user['message']);
+      }
     });
-    this.websocketDataServiceService.clientSource.subscribe(client => {
+    this.websocketDataServiceService.newUserSource.subscribe(client => {
       this._newUser = client;
+      if (this._newUser !== undefined) {
+        alert('new user update ' + this._newUser.data.user['message']);
+      }
     });
     this.websocketDataServiceService.eventSource.subscribe(events => {
       this._server_event = events;
@@ -58,11 +54,24 @@ export class AppComponent {
     this.websocketDataServiceService.otherSource.subscribe(msg => {
       this._otherMessage = msg;
     });
+
+  }
+  private clearJSONValue(u) {
+    for (const key in u) {
+      if (u.hasOwnProperty(key)) {
+        u[key] = '';
+      }
+    }
+  }
+  // tslint:disable-next-line:use-life-cycle-interface
+  ngOnInit() {
     this._newUser = JSON.parse(JSON.stringify(this._client));
     this._message = JSON.parse(JSON.stringify(this._client));
     this._currentUserdetail = {};
-    this._otherMessage = {};
+    this._userDetailsStr = '';
+    this._otherMessage = {};    
   }
+  
   showNewMessage() {
     this._client.data.message = 'changed from show message';
     this.websocketDataServiceService.changeMessage(this._client);
