@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 // tslint:disable-next-line:import-blacklist
 import { Observable, Subject } from 'rxjs/Rx';
 import { WebsocketService } from './websocket.service';
-import {DOCUMENT} from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/platform-browser';
 
 let CHAT_URL = 'ws://nonav.net:6688/'; // user web service
 

@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as Rx from 'rxjs/Rx';
 
 @Injectable()
-export class WebsocketService {
+export class WebsocketService  {
   constructor() { }
 
   private subject: Rx.Subject<MessageEvent>;
@@ -24,7 +24,7 @@ export class WebsocketService {
       ws.onerror = obs.error.bind(obs);
       ws.onclose = obs.complete.bind(obs);
       return ws.close.bind(ws);
-    });
+    }).share();
     const observer = {
       next: (data: Object) => {
         if (ws.readyState === WebSocket.OPEN) {

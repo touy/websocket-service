@@ -31,14 +31,32 @@ export class WebsocketDataServiceService implements OnInit {
   // private currentMessage = this.clientSource.asObservable();
   // private serverEvent = this.eventSource.asObservable();
   heartbeat_interval = setInterval(() => {
-    console.log('heartbeat');
+    const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
+    if (this.heartbeat_interval === undefined) {
+      return;
+    }
+    if (firstHeartBeat) {
+      this.stopService();
+      return;
+    }
+    console.log('heartbeat ' + this.heartbeat_interval);
+    sessionStorage.setItem('firstHeartBeat', '1');
+    // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
     this._message.data['user'] = {};
     this._message.data['command'] = 'heart-beat';
+    this._message.data['command2'] = 'interval ' + this.heartbeat_interval;
     this.sendMsg();
   }, 1000 * 30);
   timeOut_runner = setTimeout(() => {
+    const firstHandShake = sessionStorage.getItem('firstHandShake');
+    // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
+    if (firstHandShake) {
+      // this.stopService();
+      return;
+    }
+    sessionStorage.setItem('firstHandShake', '1');
     this.shakeHands();
   }, 1000 * 3);
 
@@ -60,6 +78,7 @@ export class WebsocketDataServiceService implements OnInit {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     console.log('init');
+
     if (!this._client.data['user'] || this._client.data['user'] === undefined) {
       this._client.data['user'] = {};
     }
@@ -72,6 +91,7 @@ export class WebsocketDataServiceService implements OnInit {
       if (d !== undefined) {
         if (d['command'] !== undefined) {
           console.log('changed from server');
+          console.log(d['command'] + d['command2']);
           switch (d['command']) {
             case 'notification-changed':
               this._server_event.push(d);
@@ -108,13 +128,14 @@ export class WebsocketDataServiceService implements OnInit {
             default:
               break;
           }
-          console.log(msg);
+          // console.log(msg);
         } else {
           const u = JSON.parse(JSON.stringify(msg.data['user']));
           this._client = msg;
           this.refreshClient();
           console.log('return from server');
           console.log(msg);
+          console.log(this._client.data['command'] + this._client.data['command2']);
           switch (this._client.data['command']) {
             case 'heart-beat':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
@@ -143,7 +164,7 @@ export class WebsocketDataServiceService implements OnInit {
               break;
             case 'shake-hands':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                console.log(this._client);
+                // console.log(this._client);
                 console.log(this._client.data['message']);
               } else {
                 console.log('shake hands ok');
@@ -160,7 +181,7 @@ export class WebsocketDataServiceService implements OnInit {
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
-                console.log(this._client.data['user']);
+                // console.log(this._client.data['user']);
                 this._currentUserdetail = u;
                 console.log('refesh user details');
                 this.refreshUserDetails();
@@ -190,7 +211,7 @@ export class WebsocketDataServiceService implements OnInit {
               break;
             case 'get-user-gui':
               console.log('here get user gui ');
-              console.log(this._client);
+              // console.log(this._client);
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
@@ -238,7 +259,7 @@ export class WebsocketDataServiceService implements OnInit {
                 this.refreshNewUserMessage();
               }
               break;
-              case 'send-confirm-phone-sms':
+            case 'send-confirm-phone-sms':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
@@ -246,7 +267,7 @@ export class WebsocketDataServiceService implements OnInit {
                 this.refreshUserDetails();
               }
               break;
-              case 'check-confirm-phone-sms':
+            case 'check-confirm-phone-sms':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
@@ -257,6 +278,7 @@ export class WebsocketDataServiceService implements OnInit {
             default:
               break;
           }
+          console.log(this.heartbeat_interval);
           console.log(this._client);
           // if (evt.data != '.') $('#output').append('<p>'+evt.data+'</p>');
         }
@@ -276,10 +298,18 @@ export class WebsocketDataServiceService implements OnInit {
   sendMsg() {
     // this._message.data['command'] = 'ping';
     // this._message = JSON.parse(JSON.stringify(this._client));
-    console.log('new message from client to websocket: ', JSON.stringify(this._message));
+    console.log('new message from client to websocket: ', JSON.stringify(this._message.data['command']));
     if (this._message['gui'] || this._message.data['command'] === 'shake-hands' || this._message.data['command'] === 'ping') {
       this.chatService.messages.next(this._message);
     }
+  }
+  getClient(): Message {
+    this._client = JSON.parse(sessionStorage.getItem('client'));
+    return this._client;
+  }
+  setClient(c): void {
+    this._client = c;
+    sessionStorage.setItem('client', JSON.stringify(this._client));
   }
   ping_test() {
     // this._client.data = {};
@@ -299,10 +329,19 @@ export class WebsocketDataServiceService implements OnInit {
       this.sendMsg();
     } else { return alert('login first'); }
   }
+  stopService() {
+    clearInterval(this.heartbeat_interval);
+    delete this.heartbeat_interval;
+  }
   shakeHands() {
+    if (!this._client.gui || this._client.gui === undefined) {
+      const c = this.getClient();
+      if (c.gui) {
+        this._client = c;
+      }
+    }
+    console.log('before shakehands' + JSON.stringify(this._client));
     this._message = JSON.parse(JSON.stringify(this._client));
-    this._message.data = {};
-    this._message.data['user'] = {};
     this._message.data['command'] = 'shake-hands';
     this.sendMsg();
     // alert('shake handds');
