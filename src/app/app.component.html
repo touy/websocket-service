@@ -1,6 +1,5 @@
-
 <router-outlet>
-  
+
 </router-outlet>
 
 <div>
@@ -10,11 +9,11 @@
 
 <div>
   <div>
-      <h1>
-          TEST  </h1>
-      <button (click)="showNewMessage()"> show new messsage</button>
+    <h1>
+      TEST </h1>
+    <button (click)="showNewMessage()"> show new messsage</button>
   </div>
-  
+
   <h1>
     PING TEST
   </h1>
@@ -22,9 +21,9 @@
 </div>
 <div>
   <h1>
-      SHAKE HANDS
+    SHAKE HANDS
   </h1>
-  
+
   <button (click)="shakeHands()"> shake hands</button>
 </div>
 <h1>
@@ -34,49 +33,45 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="loginUsername">Username</label>
   <div class="col-md-4">
-    <input 
-    [value]="_loginUser.username===undefined?'':_loginUser.username" 
-    (input)="_loginUser.username=$event.target.value"
-       name="loginUsername" type="text" placeholder="Username" class="form-control input-md" required>
+    <input [value]="_loginUser.username===undefined?'':_loginUser.username" (input)="_loginUser.username=$event.target.value"
+      name="loginUsername" type="text" placeholder="Username" class="form-control input-md" required>
   </div>
 </div>
 <!-- Text input-->
 <div class="form-group">
   <label class="col-md-4 control-label" for="password">password</label>
   <div class="col-md-4">
-    <input 
-    [value]="_loginUser.password===undefined? '' :_loginUser.password" 
-    (input)="_loginUser.password=$event.target.value"
+    <input [value]="_loginUser.password===undefined? '' :_loginUser.password" (input)="_loginUser.password=$event.target.value"
       name="loginPassword" type="password" placeholder="password" class="form-control input-md" required>
   </div>
 </div>
 
 <div>
-  
+
   <h1>
-      GET USER GUI
+    GET USER GUI
   </h1>
   <button (click)="get_user_gui()"> get user gui</button>
 </div>
 
 <div>
-    <h1>
-        logout
-      </h1>
-        <button (click)="logout()"> logout</button>
+  <h1>
+    logout
+  </h1>
+  <button (click)="logout()"> logout</button>
 </div>
 
 
 <div>
-    <h1>
-        Get user details
-      </h1>
-        <textarea cols="60" rows="9" [(ngModel)]="_userDetailsStr">
-      
-        </textarea>
-        <br/>
-        <button (click)="getUserDetails()"> get user details</button>
-        <button (click)="updateUserDetails()"> update details</button>      
+  <h1>
+    Get user details
+  </h1>
+  <textarea cols="60" rows="9" [(ngModel)]="_userDetailsStr">
+
+  </textarea>
+  <br/>
+  <button (click)="getUserDetails()"> get user details</button>
+  <button (click)="updateUserDetails()"> update details</button>
 </div>
 
 <div>
@@ -89,42 +84,30 @@
   <div class="form-group">
     <label class="col-md-4 control-label" for="oldPassword">old password</label>
     <div class="col-md-4">
-      <input  name="oldPassword" 
-      (value)="_currentUserdetail===undefined? '':_currentUserdetail.oldpassword" 
-      (input)=" _currentUserdetail.oldpassword=$event.target.value"
-      type="password" placeholder="password"
-        class="form-control input-md" required>
+      <input name="oldPassword" (value)="_currentUserdetail===undefined? '':_currentUserdetail.oldpassword" (input)=" _currentUserdetail.oldpassword=$event.target.value"
+        type="password" placeholder="password" class="form-control input-md" required>
     </div>
   </div>
   <!-- Text input-->
   <div class="form-group">
     <label class="col-md-4 control-label" for="newPassword">new password</label>
     <div class="col-md-4">
-      <input  name="newPassword" 
-      (value)="_currentUserdetail===undefined? '' : _currentUserdetail.newpassword"
-      (input)="_currentUserdetail.newpassword=$event.target.value"
-      type="password" placeholder="new password"
-        class="form-control input-md" required>
+      <input name="newPassword" (value)="_currentUserdetail===undefined? '' : _currentUserdetail.newpassword" (input)="_currentUserdetail.newpassword=$event.target.value"
+        type="password" placeholder="new password" class="form-control input-md" required>
     </div>
   </div>
   <div class="form-group">
     <label class="col-md-4 control-label" for="confirmPassword"> confirm password</label>
     <div class="col-md-4">
-      <input  name="confirmPassword" 
-      (value)="_currentUserdetail===undefined? '' :_currentUserdetail.confirmpassword "
-      (input)="_currentUserdetail.confirmpassword=$event.target.value"
-      type="password" placeholder="confirm password"
-        class="form-control input-md" required>
+      <input name="confirmPassword" (value)="_currentUserdetail===undefined? '' :_currentUserdetail.confirmpassword " (input)="_currentUserdetail.confirmpassword=$event.target.value"
+        type="password" placeholder="confirm password" class="form-control input-md" required>
     </div>
   </div>
   <div class="form-group">
     <label class="col-md-4 control-label" for="phone"> phone number</label>
     <div class="col-md-4">
-      <input  name="phone" 
-      (value)="_currentUserdetail===undefined? '' : _currentUserdetail.phonenumber"  
-      (input)="_currentUserdetail.phonenumber=$event.target.value"
-      type="number" placeholder="phonenumber" class="form-control input-md"
-        required>
+      <input name="phone" (value)="_currentUserdetail===undefined? '' : _currentUserdetail.phonenumber" (input)="_currentUserdetail.phonenumber=$event.target.value"
+        type="number" placeholder="phonenumber" class="form-control input-md" required>
     </div>
   </div>
 
@@ -132,7 +115,7 @@
   <div class="form-group">
     <label class="col-md-4 control-label" for="btnChangePassword"></label>
     <div class="col-md-4">
-      <button  name="btnChangePassword" (click)='changepassword()' class="btn btn-primary">change password</button>
+      <button name="btnChangePassword" (click)='changepassword()' class="btn btn-primary">change password</button>
     </div>
   </div>
 
@@ -142,75 +125,63 @@
   <h1>
     Register
   </h1>
-  
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="username">Username</label>
-                    <div class="col-md-4">
-                        <input  name="username"
-                        (value)="_newUser.data['user']===undefined? '' : _newUser.data['user'].username"  
-                        (input)="_newUser.data['user'].username=$event.target.value"
-                        type="text" placeholder="Username" class="form-control input-md" required>
-                    </div>
-                </div>
 
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="phonenumber">phonenumber (+856)</label>
-                    <div class="col-md-4">
-                        <input  name="phonenumber"
-                        (value)="_newUser.data['user'].phonenumber===undefined? '' : _newUser.data['user'].phonenumber" 
-                        (input)="_newUser.data['user'].phonenumber=$event.target.value"
-                        type="number" maxlength="10" placeholder="phonenumber: 205 or 209" class="form-control input-md"
-                            required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="rpassword">password</label>
-                    <div class="col-md-4">
-                        <input  name="rpassword" 
-                        (value)="_newUser.data['user'].password===undefined? '' : _newUser.data['user'].password" 
-                        (input)="_newUser.data['user'].password=$event.target.value"
-                        type="password" placeholder="password" class="form-control input-md" required>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="rconfirmpassword">confirm password</label>
-                    <div class="col-md-4">
-                        <input  
-                        (value)="_newUser.data['user'].confirmpassword===undefined? '' : _newUser.data['user'].confirmpassword" 
-                        (input)="_newUser.data['user'].confirmpassword=$event.target.value"
-                        name="rconfirmpassword" type="password" placeholder="confirm password" class="form-control input-md"
-                            required>
-                    </div>
-                </div>
-                <!-- Text input-->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="secret">secret</label>
-                    <div class="col-md-2">
-                        <input  name="secret"
-                        [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']"
-                        (input)="_newUser.data['secret']=$event.target.value"
-                        (keyup)="checkSecret($event)"
-                        maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
-                    </div>
-                </div>
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="username">Username</label>
+    <div class="col-md-4">
+      <input name="username" (value)="_newUser.data['user']===undefined? '' : _newUser.data['user'].username" (input)="_newUser.data['user'].username=$event.target.value"
+        type="text" placeholder="Username" class="form-control input-md" required>
+    </div>
+  </div>
 
-                <!-- Button -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="btnGetSecret"></label>
-                    <div class="col-md-4">
-                        <button  (click)="getSecret()" name="btnGetSecret" class="btn btn-info">get secret</button>
-                    </div>
-                </div>
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="phonenumber">phonenumber (+856)</label>
+    <div class="col-md-4">
+      <input name="phonenumber" (value)="_newUser.data['user'].phonenumber===undefined? '' : _newUser.data['user'].phonenumber"
+        (input)="_newUser.data['user'].phonenumber=$event.target.value" type="number" maxlength="10" placeholder="phonenumber: 205 or 209"
+        class="form-control input-md" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="rpassword">password</label>
+    <div class="col-md-4">
+      <input name="rpassword" (value)="_newUser.data['user'].password===undefined? '' : _newUser.data['user'].password" (input)="_newUser.data['user'].password=$event.target.value"
+        type="password" placeholder="password" class="form-control input-md" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="rconfirmpassword">confirm password</label>
+    <div class="col-md-4">
+      <input (value)="_newUser.data['user'].confirmpassword===undefined? '' : _newUser.data['user'].confirmpassword" (input)="_newUser.data['user'].confirmpassword=$event.target.value"
+        name="rconfirmpassword" type="password" placeholder="confirm password" class="form-control input-md" required>
+    </div>
+  </div>
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="secret">secret</label>
+    <div class="col-md-2">
+      <input name="secret" [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']" (input)="_newUser.data['secret']=$event.target.value"
+        (keyup)="checkSecret($event)" maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
+    </div>
+  </div>
 
-                <!-- Button -->
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="submit"></label>
-                    <div class="col-md-4">
-                        <button  (click)='register()' name="submit" class="btn btn-primary">submit</button>
-                    </div>
-                </div>
+  <!-- Button -->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="btnGetSecret"></label>
+    <div class="col-md-4">
+      <button (click)="getSecret()" name="btnGetSecret" class="btn btn-info">get secret</button>
+    </div>
+  </div>
+
+  <!-- Button -->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="submit"></label>
+    <div class="col-md-4">
+      <button (click)='register()' name="submit" class="btn btn-primary">submit</button>
+    </div>
+  </div>
 
 </div>
 
@@ -218,58 +189,71 @@
 
 
 <div>
-    <h1>
-      change phone number
-    </h1>
-    
+  <h1>
+    change phone number
+  </h1>
 
-                  <!-- Text input-->
-                  <div class="form-group">
-                      <label class="col-md-4 control-label" for="phonenumber">phonenumber (+856)</label>
-                      <div class="col-md-4">
-                          <input name="phonenumber"
-                          (value)="_currentUserdetail.phonenumber===undefined? '' : _currentUserdetail.phonenumber" 
-                          (input)="_currentUserdetail.phonenumber=$event.target.value"
-                          type="number" maxlength="10" placeholder="phonenumber: 205 or 209" class="form-control input-md"
-                              required>
-                      </div>
-                  </div>
-                  <div class="form-group">
-                      <label class="col-md-4 control-label" for="newphonenumber">new phone number phonenumber (+856)</label>
-                      <div class="col-md-4">
-                          <input  name="newphonenumber" 
-                          (value)="_currentUserdetail.newphonenumber===undefined? '' : _currentUserdetail.newphonenumber" 
-                          (input)="_currentUserdetail.newphonenumber=$event.target.value"
-                          type="number" placeholder="phonenumber: 205 or 209" class="form-control input-md" required>
-                      </div>
-                  </div>
 
-                  <!-- Text input-->
-                  <div class="form-group">
-                      <label class="col-md-4 control-label" for="secret">secret</label>
-                      <div class="col-md-2">
-                          <input name="secret"
-                          [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']"
-                          (input)="_newUser.data['secret']=$event.target.value"
-                          (keyup)="checkSMSConfirm($event)"
-                          maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
-                      </div>
-                  </div>
-  
-                  <!-- Button -->
-                  <div class="form-group">
-                      <label class="col-md-4 control-label" for="btngetSMSConfirm"></label>
-                      <div class="col-md-4">
-                          <button  (click)="getSMSConfirm()" name="btnGetSecret" class="btn btn-info">get secret</button>
-                      </div>
-                  </div>
-  
-                  <!-- Button -->
-                  <div class="form-group">
-                      <label class="col-md-4 control-label" for="submit"></label>
-                      <div class="col-md-4">
-                          <button  (click)='changePhoneNumber()' name="submit" class="btn btn-primary">submit</button>
-                      </div>
-                  </div>
-  
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="phonenumber">phonenumber (+856)</label>
+    <div class="col-md-4">
+      <input name="phonenumber" (value)="_currentUserdetail.phonenumber===undefined? '' : _currentUserdetail.phonenumber" (input)="_currentUserdetail.phonenumber=$event.target.value"
+        type="number" maxlength="10" placeholder="phonenumber: 205 or 209" class="form-control input-md" required>
+    </div>
   </div>
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="newphonenumber">new phone number phonenumber (+856)</label>
+    <div class="col-md-4">
+      <input name="newphonenumber" (value)="_currentUserdetail.newphonenumber===undefined? '' : _currentUserdetail.newphonenumber"
+        (input)="_currentUserdetail.newphonenumber=$event.target.value" type="number" placeholder="phonenumber: 205 or 209"
+        class="form-control input-md" required>
+    </div>
+  </div>
+
+  <!-- Text input-->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="secret">secret</label>
+    <div class="col-md-2">
+      <input name="secret" [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']" (input)="_newUser.data['secret']=$event.target.value"
+        (keyup)="checkSMSConfirm($event)" maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
+    </div>
+  </div>
+
+  <!-- Button -->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="btngetSMSConfirm"></label>
+    <div class="col-md-4">
+      <button (click)="getSMSConfirm()" name="btnGetSecret" class="btn btn-info">get secret</button>
+    </div>
+  </div>
+
+  <!-- Button -->
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="submit"></label>
+    <div class="col-md-4">
+      <button (click)='changePhoneNumber()' name="submit" class="btn btn-primary">submit</button>
+    </div>
+  </div>
+
+</div>
+<h1>
+  Forgot
+</h1>
+
+<div class="form-group">
+  <label class="col-md-4 control-label" for="phonenumber">Username</label>
+  <div class="col-md-4">
+    <input [value]="_currentUserdetail.phonenumber===undefined?'':_currentUserdetail.phonenumber" (input)="_currentUserdetail.phonenumber=$event.target.value"
+      name="phonenumber" type="text" placeholder="phonenumber (205)/(209)" class="form-control input-md" required>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-md-4 control-label" for="forgotkeys">forgot keys</label>
+  <div class="col-md-4">
+    <input [value]="_currentUserdetail.Forgot===undefined?'':_currentUserdetail.phonenumber" (input)="_currentUserdetail.Forgot=$event.target.value"
+      name="forgotkeys" type="text" placeholder="forgotkeys" class="form-control input-md" required>
+  </div>
+</div>
+<button (click)="getForgotKeys()">get reset keys</button>
+<button (click)="resetPassword()">Reset password</button>

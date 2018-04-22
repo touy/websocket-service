@@ -51,13 +51,6 @@ export class WebsocketDataServiceService implements OnInit {
     this.sendMsg();
   }, 1000 * 30);
   timeOut_runner = setTimeout(() => {
-    const firstHandShake = sessionStorage.getItem('firstHandShake');
-    // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
-    if (firstHandShake) {
-      // this.stopService();
-      return;
-    }
-    sessionStorage.setItem('firstHandShake', '1');
     this.shakeHands();
   }, 1000 * 3);
 
@@ -131,7 +124,6 @@ export class WebsocketDataServiceService implements OnInit {
           }
           // console.log(msg);
         } else {
-          const u = JSON.parse(JSON.stringify(msg.data['user']));
           this._client = msg;
           this.refreshClient();
           console.log('return from server');
@@ -183,6 +175,7 @@ export class WebsocketDataServiceService implements OnInit {
                 console.log(this._client.data['message']);
               } else {
                 // console.log(this._client.data['user']);
+                const u = JSON.parse(JSON.stringify(msg.data['user']));
                 this._currentUserdetail = u;
                 console.log('refesh user details');
                 this.refreshUserDetails();
@@ -298,18 +291,23 @@ export class WebsocketDataServiceService implements OnInit {
   }
   sendMsg() {
     // this._message.data['command'] = 'ping';
-    // this._message = JSON.parse(JSON.stringify(this._client));
+    console.log(JSON.stringify(this._message));
     console.log('new message from client to websocket: ', JSON.stringify(this._message.data['command']));
     if (this._message['gui'] || this._message.data['command'] === 'shake-hands' || this._message.data['command'] === 'ping') {
       this.chatService.messages.next(this._message);
     }
   }
   getClient(): Message {
-    this._client = JSON.parse(sessionStorage.getItem('client'));
+    const c = JSON.parse(sessionStorage.getItem('client'));
+    if (c) {
+      this._client = c;
+    }
     return this._client;
   }
   setClient(c): void {
-    this._client = c;
+    if (c) {
+      this._client = c;
+    }
     sessionStorage.setItem('client', JSON.stringify(this._client));
   }
   ping_test() {
@@ -336,11 +334,15 @@ export class WebsocketDataServiceService implements OnInit {
   }
   shakeHands() {
     if (!this._client.gui || this._client.gui === undefined) {
-      const c = this.getClient();
-      if (c.gui) {
-        this._client = c;
-      }
+      this.getClient();
     }
+    const firstHandShake = sessionStorage.getItem('firstHandShake');
+    // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
+    if (firstHandShake) {
+      // this.stopService();
+      return;
+    }
+    sessionStorage.setItem('firstHandShake', '1');
     console.log('before shakehands' + JSON.stringify(this._client));
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['command'] = 'shake-hands';
@@ -352,6 +354,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['command'] = 'login';
     this._message.data.user = loginuser;
+    // alert(JSON.stringify(this._message));
     this.sendMsg();
   }
 
@@ -495,33 +498,36 @@ export class WebsocketDataServiceService implements OnInit {
     this.sendMsg();
   }
 
-  //  checkForgot() {
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   this._client.data['command'] = 'check-forgot';
-  //   this._client.data['user'].phonenumber = $('#fPhoneNumber').val();
-  //   this._client.data.forgot = $('#forgotKey').val();
-  //   //this._client.data['user'].phonenumber=phone;
-  //   this.sendMsg();
-  // }
-
-
-
-  //  getForgotKeys(phone) {
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   phonesize = phone.length;
-  //   console.log(phone.indexOf('205'));
-  //   LTC = phone.indexOf('205');
-  //   UNI = phone.indexOf('209');
-  //   if (phonesize < 10 || phonesize > 10)
-  //     return alert('phone must start with 205 or 209 and 10 digit in total');
-  //   if (LTC < 0 && UNI < 0)
-  //     return alert('we support only LAOTEL and UNITEL number only');
-  //   this._client.data['command'] = 'submit-forgot';
-  //   this._client.data['user'].phonenumber = phone;
-  //   this.sendMsg();
-  // }
+  resetPassword(cu) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    cu.data['command'] = 'reset-forgot';
+    this._message.data = cu.data;
+    this.sendMsg();
+  }
+  checkForgot(cu) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    cu.data['command'] = 'check-forgot';
+    this._message.data = cu.data;
+    this.sendMsg();
+  }
+  getForgotKeys(cu) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    cu.data['command'] = 'submit-forgot';
+    const phone = cu.data['user'].phonenumber;
+    const phonesize = phone.length;
+    console.log(phone.indexOf('205'));
+    const LTC = phone.indexOf('205');
+    const UNI = phone.indexOf('209');
+    if (phonesize < 10 || phonesize > 10) {
+      return alert('phone must start with 205 or 209 and 10 digit in total');
+    }
+    if (LTC < 0 && UNI < 0) {
+      return alert('we support only LAOTEL and UNITEL number only');
+    }
+    cu.data['command'] = 'submit-forgot';
+    this._message.data = cu.data;
+    this.sendMsg();
+  }
 
 
 

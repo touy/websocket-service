@@ -26,7 +26,7 @@ export class AppComponent implements OnInit, OnDestroy {
     data: {}
   };
   private _otherSource: any = {};
-  private _loginUser = { usrname: '', password: '' };
+  private _loginUser = { username: '', password: '' };
   private _currentUserdetail: any = {};
   private _otherMessage: any = {};
   private _subs: any = [];
@@ -100,6 +100,9 @@ export class AppComponent implements OnInit, OnDestroy {
     };
     this.websocketDataServiceService.setOtherMessage(msg);
   }
+  shakeHands() {
+    this.websocketDataServiceService.shakeHands();
+  }
   ping_test() {
     this.websocketDataServiceService.ping_test();
     this._client.data.message += ' HERE in app component';
@@ -107,7 +110,8 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   login() {
-    this.websocketDataServiceService.login(this._loginUser);
+    alert(JSON.stringify(this._loginUser));
+    this.websocketDataServiceService.login(this._loginUser); // return to this._client
     this.clearJSONValue(this._loginUser);
   }
   logout() {
@@ -192,5 +196,41 @@ export class AppComponent implements OnInit, OnDestroy {
       // alert(err);
     });
   }
-
+  checkForgot(event: any) {
+    let d: any;
+    d = {};
+    d.data = {};
+    d.data.user = {};
+    d.data.user.phonenumber = this._currentUserdetail.phonenumber;
+    d.data.forgot = this._currentUserdetail.forgot;
+    if (d.data['forgot'] !== undefined) {
+      if (d.data['forgot'].length === 6) {
+        this.websocketDataServiceService.checkForgot(d.data);
+      }
+    }
+  }
+  resetPassword(event: any) {
+    let d: any;
+    d = {};
+    d.data = {};
+    d.data.user = {};
+    d.data.user.phonenumber = this._currentUserdetail.phonenumber;
+    d.data.forgot = this._currentUserdetail.forgot;
+    if (d.data['forgot'] !== undefined) {
+      if (d.data['forgot'].length === 6) {
+        this.websocketDataServiceService.resetPassword(d.data);
+      }
+    }
+  }
+  getForgotKeys() {
+    let d: any;
+    d = {};
+    d.data = {};
+    d.data.user = {};
+    d.data.user.phonenumber = this._currentUserdetail.phonenumber;
+    d.data.forgot = this._currentUserdetail.forgot;
+    if (d.data['forgot'] !== undefined) {
+      this.websocketDataServiceService.getForgotKeys(d.data);
+    } else { alert('forgot key is empty'); }
+  }
 }
