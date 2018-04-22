@@ -30,6 +30,7 @@ export class AppComponent implements OnInit, OnDestroy {
   private _currentUserdetail: any = {};
   private _otherMessage: any = {};
   private _subs: any = [];
+  private _trans: any = [];
   constructor(private websocketDataServiceService: WebsocketDataServiceService, private router: Router) {
     sessionStorage.setItem('firstHandShake', '');
     sessionStorage.setItem('firstHeartBeat', '');
@@ -90,6 +91,8 @@ export class AppComponent implements OnInit, OnDestroy {
 
   showNewMessage() {
     this._client.data.message = 'changed from show message';
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    // this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.changeMessage(this._client);
   }
   setOtherMessage() {
@@ -98,62 +101,83 @@ export class AppComponent implements OnInit, OnDestroy {
       data: {},
       other: {}, // ...
     };
+    msg.data['transaction'] = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.setOtherMessage(msg);
   }
   shakeHands() {
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.shakeHands();
   }
   ping_test() {
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.ping_test();
     this._client.data.message += ' HERE in app component';
     console.log(this._client);
   }
 
   login() {
-    alert(JSON.stringify(this._loginUser));
+    // alert(JSON.stringify(this._loginUser));
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.login(this._loginUser); // return to this._client
     this.clearJSONValue(this._loginUser);
   }
   logout() {
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.logout();
   }
   getUserDetails() {
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.getUserDetails(this._client.data);
   }
   updateUserDetails() {
     this._currentUserdetail = JSON.parse(this._userDetailsStr);
+    this._currentUserdetail.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.updateUserDetails(this._currentUserdetail); // should be _userDetails
   }
   get_user_gui() {
+    this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+    this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.get_user_gui();
   }
 
   changepassword() {
+    this._currentUserdetail.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.changePassword(this._currentUserdetail);
     this.clearJSONValue(this._currentUserdetail);
   }
   register() {
+    this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.register(this._newUser);
     this.clearJSONValue(this._newUser);
   }
   getSecret() {
+    this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.getSecret(this._newUser);
   }
   checkSecret(event: any) {
     if (this._newUser.data['secret'] !== undefined) {
       if (this._newUser.data['secret'].length === 6) {
+        this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
         this.websocketDataServiceService.checkSecret(this._newUser);
       }
     }
   }
   checkUsername() {
+    this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.checkUsername(this._newUser);
   }
   checkPhoneNumber() {
+    this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     this.websocketDataServiceService.checkPhoneNumber(this._newUser);
   }
   getSMSConfirm() {
     if (this._client.logintoken) {
+      this._currentUserdetail.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
       this.websocketDataServiceService.send_confirm_phone_sms(this._currentUserdetail);
     } else {
       alert('login first');
@@ -163,6 +187,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this._client.logintoken) {
       if (this._newUser.data['secret'] !== undefined) {
         if (this._newUser.data['secret'].length === 6) {
+          this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
           this.websocketDataServiceService.check_confirm_phone_sms(this._newUser);
         }
       }
@@ -175,6 +200,7 @@ export class AppComponent implements OnInit, OnDestroy {
     if (this._client.logintoken) {
       if (this._newUser.data['secret'] !== undefined) {
         if (this._newUser.data['secret'].length === 6) {
+          this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
           this.websocketDataServiceService.update_confirm_phone(this._newUser.data);
         }
       }
@@ -203,6 +229,7 @@ export class AppComponent implements OnInit, OnDestroy {
     d.data.user = {};
     d.data.user.phonenumber = this._currentUserdetail.phonenumber;
     d.data.forgot = this._currentUserdetail.forgot;
+    d.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     if (d.data['forgot'] !== undefined) {
       if (d.data['forgot'].length === 6) {
         this.websocketDataServiceService.checkForgot(d.data);
@@ -216,6 +243,7 @@ export class AppComponent implements OnInit, OnDestroy {
     d.data.user = {};
     d.data.user.phonenumber = this._currentUserdetail.phonenumber;
     d.data.forgot = this._currentUserdetail.forgot;
+    d.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     if (d.data['forgot'] !== undefined) {
       if (d.data['forgot'].length === 6) {
         this.websocketDataServiceService.resetPassword(d.data);
@@ -229,8 +257,17 @@ export class AppComponent implements OnInit, OnDestroy {
     d.data.user = {};
     d.data.user.phonenumber = this._currentUserdetail.phonenumber;
     d.data.forgot = this._currentUserdetail.forgot;
+
+    d.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+
     if (d.data['forgot'] !== undefined) {
       this.websocketDataServiceService.getForgotKeys(d.data);
-    } else { alert('forgot key is empty'); }
+    } else { return('forgot key is empty'); }
+  }
+
+  createTransaction() {
+    let x;
+    this._trans.push(x = this.websocketDataServiceService.createTransaction());
+    return x;
   }
 }

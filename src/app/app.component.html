@@ -251,7 +251,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label" for="forgotkeys">forgot keys</label>
   <div class="col-md-4">
-    <input [value]="_currentUserdetail.Forgot===undefined?'':_currentUserdetail.phonenumber" (input)="_currentUserdetail.Forgot=$event.target.value"
+    <input [value]="_currentUserdetail.forgot===undefined?'':_currentUserdetail.forgot" (input)="_currentUserdetail.Forgot=$event.target.value"
       name="forgotkeys" type="text" placeholder="forgotkeys" class="form-control input-md" required>
   </div>
 </div>
