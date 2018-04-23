@@ -31,6 +31,8 @@ export class AppComponent implements OnInit, OnDestroy {
   private _otherMessage: any = {};
   private _subs: any = [];
   private _trans: any = [];
+
+  /// WEBSOCKET LAUNCHING
   constructor(private websocketDataServiceService: WebsocketDataServiceService, private router: Router) {
     this.loadClient();
     this._subs.push(this.websocketDataServiceService.clientSource.subscribe(client => {
@@ -62,6 +64,11 @@ export class AppComponent implements OnInit, OnDestroy {
     }));
 
   }
+//// END WEBSOCKET LAUNCHING
+
+
+
+  /// OTHER FUNCTIONS
   private clearJSONValue(u) {
     for (const key in u) {
       if (u.hasOwnProperty(key)) {
@@ -69,6 +76,10 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     }
   }
+
+  //// END OTHER FUNCTIONS
+
+  /// INIT FUNCTIONS
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     this._newUser = JSON.parse(JSON.stringify(this._client));
@@ -106,6 +117,12 @@ export class AppComponent implements OnInit, OnDestroy {
       this.saveClient();
     }
   }
+/// INIT FUNCTIONS
+
+
+
+
+  /// *************RECEIVING  */
 
   readClient(c): any {
     // this._client
@@ -346,12 +363,12 @@ export class AppComponent implements OnInit, OnDestroy {
     // this._message
     this._message = m;
   }
+  /// END RECEIVING
 
 
 
 
-
-
+  //// SENDING
   showNewMessage() {
     this._client.data.message = 'changed from show message';
     this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
@@ -535,4 +552,6 @@ export class AppComponent implements OnInit, OnDestroy {
     this._trans.push(x = this.websocketDataServiceService.createTransaction());
     return x;
   }
+
+  /////////////// END SENDING
 }
