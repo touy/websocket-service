@@ -134,7 +134,7 @@ export class AppComponent implements OnInit, OnDestroy {
       switch (this._client.data['command']) {
         case 'heart-beat':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // this._client.data['user'] = u;
             console.log('heart beat ok');
@@ -146,14 +146,14 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'login':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             console.log('LOGIN OK');
           }
           break;
         case 'get-client':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             console.log('get-client OK');
           }
@@ -161,21 +161,21 @@ export class AppComponent implements OnInit, OnDestroy {
         case 'shake-hands':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
             // // console.log(this._client);
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             console.log('shake hands ok');
           }
           break;
         case 'logout':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             console.log('LOGOUT OK');
           }
           break;
         case 'get-profile':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // console.log(this._client.data['user']);
             const u = JSON.parse(JSON.stringify(c.data['user']));
@@ -185,7 +185,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'change-password':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert('change password OK');
             console.log('change password OK');
@@ -193,7 +193,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'get-transaction':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert('change password OK');
             console.log('get transaction id ok');
@@ -201,7 +201,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'check-transaction':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert('change password OK');
             console.log('check transaction id ok');
@@ -209,7 +209,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'check-forgot':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert(this._client.data['message']);
             console.log('check forgot ok');
@@ -217,14 +217,14 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'reset-forgot':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             console.log('reset forgot ok');
           }
           break;
         case 'submit-forgot':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert(this._client.data['message']);
             this._currentUserdetail = this._client.data['user'];
@@ -235,7 +235,7 @@ export class AppComponent implements OnInit, OnDestroy {
           // console.log('here get user gui ');
           // // console.log(this._client);
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert(this._client.data['user'].gui);
             console.log('get user gui ok');
@@ -243,7 +243,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'check-phonenumber':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             // // alert(this._client.data['user'].gui);
             this._newUser.data = this._client.data;
@@ -252,7 +252,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'check-username':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             this._newUser.data = this._client.data;
             console.log('chek username ok');
@@ -260,7 +260,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'check-secret':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             this._newUser.data = this._client.data;
             console.log('check secret ok');
@@ -268,7 +268,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'get-secret':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             this._newUser.data = this._client.data;
             console.log('get secret  ok');
@@ -276,7 +276,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'register':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             this._newUser.data = this._client.data;
             console.log('register ok');
@@ -284,7 +284,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'send-confirm-phone-sms':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             this._currentUserdetail = this._client.data['user'];
             console.log('send confirm phone sms ok');
@@ -292,7 +292,7 @@ export class AppComponent implements OnInit, OnDestroy {
           break;
         case 'check-confirm-phone-sms':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-            // console.log(this._client.data['message']);
+            console.log(this._client.data['message']);
           } else {
             this._currentUserdetail = this._client.data['user'];
             console.log('check confirm phone sms ok');
