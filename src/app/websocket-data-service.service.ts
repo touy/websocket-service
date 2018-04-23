@@ -4,7 +4,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { WebsocketService } from './websocket.service';
 import { ChatService, Message } from './chat.service';
 import { v4 as uuid } from 'uuid';
-import { Moment  } from 'moment';
+import { Moment } from 'moment';
 import * as moment from 'moment-timezone';
 
 @Injectable()
@@ -124,7 +124,7 @@ export class WebsocketDataServiceService implements OnInit {
             case 'forgot-changed':
               console.log(d['gui']);
               break;
-              default:
+            default:
               break;
           }
           // console.log(msg);
@@ -214,7 +214,7 @@ export class WebsocketDataServiceService implements OnInit {
                 // alert(this._client.data['message']);
               }
               break;
-              case 'reset-forgot':
+            case 'reset-forgot':
               if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                 console.log(this._client.data['message']);
               } else {
@@ -429,7 +429,7 @@ export class WebsocketDataServiceService implements OnInit {
 
   register(newuser) {
     this._message = JSON.parse(JSON.stringify(this._client));
-    //console.log('before sending register');
+    // console.log('before sending register');
     this._message.data = {};
     this._message.data = newuser.data;
     this._message.data['command'] = 'register';
@@ -566,7 +566,7 @@ export class WebsocketDataServiceService implements OnInit {
     this.sendMsg();
   }
   createTransaction() {
-    return { transactionid: uuid(), transactiontime: new Date()};
+    return { transactionid: uuid(), transactiontime: new Date() };
   }
   convertTZ(fromTZ) {
     // let m= moment().;

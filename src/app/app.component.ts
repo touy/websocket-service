@@ -32,12 +32,12 @@ export class AppComponent implements OnInit, OnDestroy {
   private _subs: any = [];
   private _trans: any = [];
   constructor(private websocketDataServiceService: WebsocketDataServiceService, private router: Router) {
-    sessionStorage.setItem('firstHandShake', '');
-    sessionStorage.setItem('firstHeartBeat', '');
+    this.loadClient();
     this._subs.push(this.websocketDataServiceService.clientSource.subscribe(client => {
       this._client = client;
       if (this._client.data['user'] !== undefined) {
         /// alert('client update ' + this._client.data.user['message']);
+        //alert(JSON.stringify(this._client));
       }
     }));
     this._subs.push(this.websocketDataServiceService.newUserSource.subscribe(client => {
@@ -210,9 +210,9 @@ export class AppComponent implements OnInit, OnDestroy {
   }
   goTo(com) {
     console.log(JSON.stringify(this._client));
-    if (!this._client.gui || this._client.gui === undefined) {
-      this._client = this.websocketDataServiceService.getClient();
-    }
+    // if (!this._client.gui || this._client.gui === undefined) {
+    //   this._client = this.websocketDataServiceService.getClient();
+    // }
     this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.setClient(this._client);
     this.router.navigate([com]).then(res => {
@@ -221,6 +221,22 @@ export class AppComponent implements OnInit, OnDestroy {
     }).catch(err => {
       // alert(err);
     });
+  }
+  saveClient() {
+    this.websocketDataServiceService.refreshClient();
+    this.websocketDataServiceService.setClient(this._client);
+  }
+  loadClient() {
+    sessionStorage.setItem('firstHandShake', '');
+    sessionStorage.setItem('firstHeartBeat', '');
+    if (!this._client.gui || this._client.gui === undefined) {
+      this._client = this.websocketDataServiceService.getClient();
+      this.websocketDataServiceService.refreshClient();
+      console.log('client loaded');
+    } else {
+      this.saveClient();
+    }
+
   }
   checkForgot(event: any) {
     let d: any;
