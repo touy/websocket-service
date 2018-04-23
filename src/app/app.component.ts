@@ -36,26 +36,29 @@ export class AppComponent implements OnInit, OnDestroy {
     this._subs.push(this.websocketDataServiceService.clientSource.subscribe(client => {
       this._client = client;
       if (this._client.data['user'] !== undefined) {
-        /// alert('client update ' + this._client.data.user['message']);
-        //alert(JSON.stringify(this._client));
+        this.readClient(client);
       }
     }));
     this._subs.push(this.websocketDataServiceService.newUserSource.subscribe(client => {
       this._newUser = client;
       if (this._newUser !== undefined) {
         alert('new user update ' + this._newUser.data.user['message']);
+        this.readNewUser(client);
       }
     }));
     this._subs.push(this.websocketDataServiceService.eventSource.subscribe(events => {
-      this._server_event = events;
+      this._server_event.push(events);
+      this.readServerEvent(events);
     }));
     this._subs.push(this.websocketDataServiceService.currentUserSource.subscribe(user => {
       this._currentUserdetail = user;
       this._userDetailsStr = JSON.stringify(this._currentUserdetail);
+      this.readCurrentUserDetail(user);
     }));
 
     this._subs.push(this.websocketDataServiceService.otherSource.subscribe(msg => {
       this._otherMessage = msg;
+      this.readOtherMessage(msg);
     }));
 
   }
@@ -88,6 +91,42 @@ export class AppComponent implements OnInit, OnDestroy {
     // this.websocketDataServiceService.newUserSource.unsubscribe();
     // this.websocketDataServiceService.otherSource.unsubscribe();
   }
+  saveClient() {
+    this.websocketDataServiceService.refreshClient();
+    this.websocketDataServiceService.setClient(this._client);
+  }
+  loadClient() {
+    sessionStorage.setItem('firstHandShake', '');
+    sessionStorage.setItem('firstHeartBeat', '');
+    if (!this._client.gui || this._client.gui === undefined) {
+      this._client = this.websocketDataServiceService.getClient();
+      this.websocketDataServiceService.refreshClient();
+      console.log('client loaded');
+    } else {
+      this.saveClient();
+    }
+  }
+
+  readClient(c): any {
+    // this._client
+  }
+  readNewUser(n): any {
+    // this._newUser;
+  }
+  readServerEvent(event:any): any {
+    // this._server_event
+  }
+  readCurrentUserDetail(c:any): any {
+    // this._currentUserDetail
+  }
+  readOtherMessage(m:any): any {
+    // this._message
+  }
+
+
+
+
+
 
   showNewMessage() {
     this._client.data.message = 'changed from show message';
@@ -222,22 +261,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // alert(err);
     });
   }
-  saveClient() {
-    this.websocketDataServiceService.refreshClient();
-    this.websocketDataServiceService.setClient(this._client);
-  }
-  loadClient() {
-    sessionStorage.setItem('firstHandShake', '');
-    sessionStorage.setItem('firstHeartBeat', '');
-    if (!this._client.gui || this._client.gui === undefined) {
-      this._client = this.websocketDataServiceService.getClient();
-      this.websocketDataServiceService.refreshClient();
-      console.log('client loaded');
-    } else {
-      this.saveClient();
-    }
 
-  }
   checkForgot(event: any) {
     let d: any;
     d = {};
