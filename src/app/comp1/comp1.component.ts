@@ -30,8 +30,8 @@ export class Comp1Component implements OnInit, OnDestroy {
   private _subs: any = [];
 
   constructor(private websocketDataServiceService: WebsocketDataServiceService, private router: Router) {
-    // sessionStorage.setItem('firstHandShake', '');
-    // sessionStorage.setItem('firstHeartBeat', '');
+    sessionStorage.setItem('firstHandShake', '');
+    sessionStorage.setItem('firstHeartBeat', '');
     this._subs.push(this.websocketDataServiceService.clientSource.subscribe(client => {
       this._client = client;
       if (this._client.data['user'] !== undefined) {

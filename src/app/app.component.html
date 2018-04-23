@@ -242,17 +242,23 @@
 </h1>
 
 <div class="form-group">
-  <label class="col-md-4 control-label" for="phonenumber">Username</label>
+  <label class="col-md-4 control-label" for="phonenumber">phone number</label>
   <div class="col-md-4">
-    <input [value]="_currentUserdetail.phonenumber===undefined?'':_currentUserdetail.phonenumber" (input)="_currentUserdetail.phonenumber=$event.target.value"
+    <input 
+    [value]="_currentUserdetail.phonenumber===undefined?'':_currentUserdetail.phonenumber" 
+    (input)="_currentUserdetail.phonenumber=$event.target.value"
       name="phonenumber" type="text" placeholder="phonenumber (205)/(209)" class="form-control input-md" required>
   </div>
 </div>
 <div class="form-group">
   <label class="col-md-4 control-label" for="forgotkeys">forgot keys</label>
   <div class="col-md-4">
-    <input [value]="_currentUserdetail.forgot===undefined?'':_currentUserdetail.forgot" (input)="_currentUserdetail.Forgot=$event.target.value"
-      name="forgotkeys" type="text" placeholder="forgotkeys" class="form-control input-md" required>
+    <input 
+
+    [value]="_currentUserdetail.forgot===undefined?'':_currentUserdetail.forgot" 
+    (input)="_currentUserdetail.forgot=$event.target.value"
+    (keyup)="checkForgot($event)"
+      name="forgotkeys" type="text" placeholder="forgot keys" class="form-control input-md" required>
   </div>
 </div>
 <button (click)="getForgotKeys()">get reset keys</button>

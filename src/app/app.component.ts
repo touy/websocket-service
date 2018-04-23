@@ -77,7 +77,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._otherMessage = {};
   }
   ngOnDestroy() {
-    // console.log('STOP SERVICE');
+    console.log('STOP SERVICE');
     // this.websocketDataServiceService.stopService();
     // this._subs.array.forEach(element => {
     //   element.unsubscribe();
@@ -209,7 +209,7 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
   goTo(com) {
-    // console.log(JSON.stringify(this._client));
+    console.log(JSON.stringify(this._client));
     if (!this._client.gui || this._client.gui === undefined) {
       this._client = this.websocketDataServiceService.getClient();
     }
@@ -232,7 +232,7 @@ export class AppComponent implements OnInit, OnDestroy {
     d.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     if (d.data['forgot'] !== undefined) {
       if (d.data['forgot'].length === 6) {
-        this.websocketDataServiceService.checkForgot(d.data);
+        this.websocketDataServiceService.checkForgot(d);
       }
     }
   }
@@ -244,9 +244,9 @@ export class AppComponent implements OnInit, OnDestroy {
     d.data.user.phonenumber = this._currentUserdetail.phonenumber;
     d.data.forgot = this._currentUserdetail.forgot;
     d.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
-    if (d.data['forgot'] !== undefined) {
+    if (d.data['forgot'] !== undefined && d.data.user['phonenumber'] !== undefined) {
       if (d.data['forgot'].length === 6) {
-        this.websocketDataServiceService.resetPassword(d.data);
+        this.websocketDataServiceService.resetPassword(d);
       }
     }
   }
@@ -259,10 +259,11 @@ export class AppComponent implements OnInit, OnDestroy {
     d.data.forgot = this._currentUserdetail.forgot;
 
     d.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
-
-    if (d.data['forgot'] !== undefined) {
-      this.websocketDataServiceService.getForgotKeys(d.data);
-    } else { return('forgot key is empty'); }
+    alert(JSON.stringify(d));
+    // alert(JSON.stringify(this._currentUserdetail));
+    if (d.data.user['phonenumber'] !== undefined) {
+      this.websocketDataServiceService.getForgotKeys(d);
+    } else { alert('forgot key is empty'); }
   }
 
   createTransaction() {
