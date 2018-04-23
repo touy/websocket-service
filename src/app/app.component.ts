@@ -109,18 +109,242 @@ export class AppComponent implements OnInit, OnDestroy {
 
   readClient(c): any {
     // this._client
+    this._client = c;
+    if (c !== undefined) {
+      // console.log('return from server');
+      // console.log(msg);
+      // console.log(this._client.data['command'] + this._client.data['command2']);
+      switch (this._client.data['command']) {
+        case 'heart-beat':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // this._client.data['user'] = u;
+            console.log('heart beat ok');
+          }
+          break;
+        case 'ping':
+          console.log('ping OK');
+          // // alert(this._client.data['message']);
+          break;
+        case 'login':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            console.log('LOGIN OK');
+          }
+          break;
+        case 'get-client':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            console.log('get-client OK');
+          }
+          break;
+        case 'shake-hands':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // // console.log(this._client);
+            // console.log(this._client.data['message']);
+          } else {
+            console.log('shake hands ok');
+          }
+          break;
+        case 'logout':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            console.log('LOGOUT OK');
+          }
+          break;
+        case 'get-profile':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // console.log(this._client.data['user']);
+            const u = JSON.parse(JSON.stringify(c.data['user']));
+            this._currentUserdetail = u;
+            console.log('get user details ok');
+          }
+          break;
+        case 'change-password':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert('change password OK');
+            console.log('change password OK');
+          }
+          break;
+        case 'get-transaction':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert('change password OK');
+            console.log('get transaction id ok');
+          }
+          break;
+        case 'check-transaction':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert('change password OK');
+            console.log('check transaction id ok');
+          }
+          break;
+        case 'check-forgot':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert(this._client.data['message']);
+            console.log('check forgot ok');
+          }
+          break;
+        case 'reset-forgot':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            console.log('reset forgot ok');
+          }
+          break;
+        case 'submit-forgot':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert(this._client.data['message']);
+            this._currentUserdetail = this._client.data['user'];
+            console.log('submit forgot ok');
+          }
+          break;
+        case 'get-user-gui':
+          // console.log('here get user gui ');
+          // // console.log(this._client);
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert(this._client.data['user'].gui);
+            console.log('get user gui ok');
+          }
+          break;
+        case 'check-phonenumber':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            // // alert(this._client.data['user'].gui);
+            this._newUser.data = this._client.data;
+            console.log('check phonenumber ok');
+          }
+          break;
+        case 'check-username':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            this._newUser.data = this._client.data;
+            console.log('chek username ok');
+          }
+          break;
+        case 'check-secret':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            this._newUser.data = this._client.data;
+            console.log('check secret ok');
+          }
+          break;
+        case 'get-secret':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            this._newUser.data = this._client.data;
+            console.log('get secret  ok');
+          }
+          break;
+        case 'register':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            this._newUser.data = this._client.data;
+            console.log('register ok');
+          }
+          break;
+        case 'send-confirm-phone-sms':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            this._currentUserdetail = this._client.data['user'];
+            console.log('send confirm phone sms ok');
+          }
+          break;
+        case 'check-confirm-phone-sms':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            // console.log(this._client.data['message']);
+          } else {
+            this._currentUserdetail = this._client.data['user'];
+            console.log('check confirm phone sms ok');
+          }
+          break;
+        default:
+          break;
+      }
+      // console.log(this.heartbeat_interval);
+      // console.log(this._client);
+      // if (evt.data != '.') $('#output').append('<p>'+evt.data+'</p>');
+    } else {
+      // alert('data empty');
+      console.log('data is empty');
+    }
   }
   readNewUser(n): any {
     // this._newUser;
+    this._newUser.data = n.data;
   }
-  readServerEvent(event:any): any {
+  readServerEvent(event: any): any {
     // this._server_event
+    const d = event;
+    if (d['command'] !== undefined) {
+      // console.log('changed from server');
+      // console.log(d['command'] + d['command2']);
+      switch (d['command']) {
+        case 'notification-changed':
+          if (d['client']['data']['sms'] !== undefined) {
+            console.log('SMS');
+            console.log(d['client']['data']['res'].resultDesc);
+            console.log(d['client']['data']['res'].msisdn);
+          }
+          if (d['client']['data']['topup'] !== undefined) {
+            console.log('topup');
+            console.log(d['client']['data']['res'].resultDesc);
+            console.log(d['client']['data']['res'].msisdn);
+          }
+          if (d['client']['data']['checkbalance'] !== undefined) {
+            console.log('check balance');
+            console.log(d['client']['data']['res'].resultDesc);
+            console.log(d['client']['data']['res'].msisdn);
+          }
+          break;
+        case 'error-changed':
+          console.log(d['client']['data']['message']);
+          break;
+        case 'login-changed':
+          console.log(d['client']['logintoken'] + '   -   ' + d['client']['logintime']);
+          break;
+        case 'message-changed':
+          console.log(d['client']['data']['message']);
+          break;
+        case 'forgot-changed':
+          console.log(d['gui']);
+          break;
+        default:
+          break;
+      }
+      // // console.log(msg);
+    }
   }
-  readCurrentUserDetail(c:any): any {
+  readCurrentUserDetail(c: any): any {
     // this._currentUserDetail
+    this._currentUserdetail = c;
   }
-  readOtherMessage(m:any): any {
+  readOtherMessage(m: any): any {
     // this._message
+    this._message = m;
   }
 
 
