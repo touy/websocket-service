@@ -113,17 +113,27 @@ export class WebsocketDataServiceService implements OnInit {
               }
               break;
             case 'error-changed':
-              // console.log(d['client']['data']['message']);
+            console.log(d);
               break;
             case 'login-changed':
-              // console.log(d['client']['logintoken'] + '   -   ' + d['client']['logintime']);
+            console.log(d);
               break;
             case 'message-changed':
               // console.log(d['client']['data']['message']);
               break;
             case 'forgot-changed':
-              // console.log(d['gui']);
+            console.log(d);
               break;
+              case 'phone-changed':
+              console.log(d);
+              break;
+              case 'secret-changed':
+              console.log(d);
+              break;
+              case 'online-changed':
+              console.log(d);
+              break;
+
             default:
               break;
           }
@@ -140,6 +150,7 @@ export class WebsocketDataServiceService implements OnInit {
                 // console.log(this._client.data['message']);
               } else {
                 // this._client.data['user'] = u;
+                this.setClient(this._client);
               }
               break;
             case 'ping':
@@ -151,6 +162,7 @@ export class WebsocketDataServiceService implements OnInit {
                 // console.log(this._client.data['message']);
               } else {
                 // console.log('LOGIN OK');
+                this.setClient(this._client);
               }
               break;
             case 'get-client':
@@ -158,6 +170,7 @@ export class WebsocketDataServiceService implements OnInit {
                 // console.log(this._client.data['message']);
               } else {
                 // console.log('get-client OK');
+                this.setClient(this._client);
               }
               break;
             case 'shake-hands':
@@ -166,6 +179,7 @@ export class WebsocketDataServiceService implements OnInit {
                 // console.log(this._client.data['message']);
               } else {
                 // console.log('shake hands ok');
+                this.setClient(this._client);
               }
               break;
             case 'logout':
@@ -173,6 +187,7 @@ export class WebsocketDataServiceService implements OnInit {
                 // console.log(this._client.data['message']);
               } else {
                 // console.log('LOGOUT OK');
+                this.setClient(this._client);
               }
               break;
             case 'get-profile':
@@ -344,6 +359,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['user'] = {};
     this._message.data['command'] = 'ping';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
   get_user_gui() {
@@ -352,6 +368,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data['user'] = {};
     this._message.data['command'] = 'get-user-gui';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // } else { return // alert('login first'); }
   }
@@ -373,6 +390,7 @@ export class WebsocketDataServiceService implements OnInit {
     // console.log('before shakehands' + JSON.stringify(this._client));
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['command'] = 'shake-hands';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // // alert('shake handds');
   }
@@ -382,6 +400,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data['command'] = 'login';
     this._message.data.user = loginuser;
     // // alert(JSON.stringify(this._message));
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
 
@@ -390,6 +409,7 @@ export class WebsocketDataServiceService implements OnInit {
     // if (this._message.logintoken) {
     this._message.data['user'] = {};
     this._message.data['command'] = 'logout';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // } else { return // alert('login first'); }
   }
@@ -400,6 +420,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = data;
     this._message.data['user'] = {};
     this._message.data['command'] = 'get-profile';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // } else { return // alert('login first'); }
   }
@@ -410,19 +431,21 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data['user'] = updateUserDetails;
     this._message.data['command'] = 'edit-profile';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // } else { return // alert('login first'); }
   }
 
   changePassword(u) {
     // this._client.data['user'] = {};
+    // this.refreshClient();
     this._message = JSON.parse(JSON.stringify(this._client));
     // // alert('before change==> ' + JSON.stringify(u));
     // if (this._message.logintoken) {
     this._message.data['command'] = 'change-password';
     this._message.data['user'] = u;
     this._message.data['user'].username = this._message.username;
-
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // } else { return // alert('login first'); }
   }
@@ -433,6 +456,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data = newuser.data;
     this._message.data['command'] = 'register';
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
 
@@ -445,6 +469,7 @@ export class WebsocketDataServiceService implements OnInit {
       // // alert(JSON.stringify(this._client));
       this._message = JSON.parse(JSON.stringify(this._client));
       this._message.data = this._newUser.data;
+      this._message.data.transaction = this.createTransaction();
       this.sendMsg();
     } else { return ('User is undefined'); }
   }
@@ -458,6 +483,7 @@ export class WebsocketDataServiceService implements OnInit {
       // // alert(JSON.stringify(this._client));
       this._message = JSON.parse(JSON.stringify(this._client));
       this._message.data = this._newUser.data;
+      this._message.data.transaction = this.createTransaction();
       this.sendMsg();
     } else { return ('User is undefined'); }
   }
@@ -479,6 +505,7 @@ export class WebsocketDataServiceService implements OnInit {
       // // alert(JSON.stringify(this._newUser));
       this._message = JSON.parse(JSON.stringify(this._client));
       this._message.data = this._newUser.data;
+      this._message.data.transaction = this.createTransaction();
       this.sendMsg();
     } else { return ('User is undefined'); }
   }
@@ -489,6 +516,7 @@ export class WebsocketDataServiceService implements OnInit {
       // // alert(JSON.stringify(this._client));
       this._message = JSON.parse(JSON.stringify(this._client));
       this._message.data = this._newUser.data;
+      this._message.data.transaction = this.createTransaction();
       this.sendMsg();
     } else { return ('User is undefined'); }
   }
@@ -507,6 +535,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['command'] = 'send-confirm-phone-sms';
     this._message.data['user'] = user;
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
 
@@ -515,6 +544,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = data;
     this._message.data['command'] = 'check-confirm-phone-sms';
     // this._client.data['user'].phonenumber=phone;
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
   update_confirm_phone(user) {
@@ -522,6 +552,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data['user'] = user;
     this._message.data['command'] = 'update-confirm-phone-sms';
     // this._client.data['user'].phonenumber=phone;
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
 
@@ -529,12 +560,14 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     cu.data['command'] = 'reset-forgot';
     this._message.data = cu.data;
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
   checkForgot(cu) {
     this._message = JSON.parse(JSON.stringify(this._client));
     cu.data['command'] = 'check-forgot';
     this._message.data = cu.data;
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
   getForgotKeys(cu) {
@@ -553,6 +586,7 @@ export class WebsocketDataServiceService implements OnInit {
     }
     cu.data['command'] = 'submit-forgot';
     this._message.data = cu.data;
+    this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
   getTransaction(c) {
@@ -562,6 +596,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   checkTransaction(c) {
     this._message = JSON.parse(JSON.stringify(c));
+    this._message.data.transaction = this.createTransaction();
     this._message.command = 'check-transaction';
     this.sendMsg();
   }
