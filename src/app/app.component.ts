@@ -306,49 +306,96 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
   readServerEvent(event: any): any {
-
-    const d = event;
-    if (d !== undefined) {
-      this._server_event.push(event);
-      if (d['command'] !== undefined) {
-        // console.log('changed from server');
-        // console.log(d['command'] + d['command2']);
-        switch (d['command']) {
-          case 'notification-changed':
-            if (d['client']['data']['sms'] !== undefined) {
-              console.log('SMS');
-              console.log(d['client']['data']['res'].resultDesc);
-              console.log(d['client']['data']['res'].msisdn);
-            }
-            if (d['client']['data']['topup'] !== undefined) {
-              console.log('topup');
-              console.log(d['client']['data']['res'].resultDesc);
-              console.log(d['client']['data']['res'].msisdn);
-            }
-            if (d['client']['data']['checkbalance'] !== undefined) {
-              console.log('check balance');
-              console.log(d['client']['data']['res'].resultDesc);
-              console.log(d['client']['data']['res'].msisdn);
-            }
-            break;
-          case 'error-changed':
-            console.log(d['client']['data']['message']);
-            break;
-          case 'login-changed':
-            console.log(d['client']['logintoken'] + '   -   ' + d['client']['logintime']);
-            break;
-          case 'message-changed':
-            console.log(d['client']['data']['message']);
-            break;
-          case 'forgot-changed':
-            console.log(d['gui']);
-            break;
-          default:
-            break;
+    if (event === undefined) {
+      return;
+    }
+    let e = event;
+    if (!Array.isArray(event)) {
+      e = [event];
+    }
+    for (let index = 0; index < e.length; index++) {
+      const d = e[index];
+      if (d !== undefined) {
+        this._server_event.push(event);
+        console.log('changed from server');
+        // console.log(d);
+        if (d['command'] !== undefined) {
+          // console.log(d['command'] + d['command2']);
+          switch (d['command']) {
+            case 'notification-changed':
+              console.log(d);
+              if (d['client']['data']['command'] === 'send-sms') {
+                console.log(d.client.data.message);
+              }
+              if (d['client']['data']['command'] === 'recieved-sms') {
+                console.log(d.client.data.message);
+                if (d['client']['data']['sms'] !== undefined) {
+                  console.log('SMS');
+                  console.log(d['client']['data']['res'].resultDesc);
+                  console.log(d['client']['data']['res'].msisdn);
+                }
+              }
+              if (d['client']['data']['command'] === 'send-topup') {
+                console.log(d.client.data.message);
+              }
+              if (d['client']['data']['command'] === 'recieved-topup') {
+                console.log(d.client.data.message);
+                if (d['client']['data']['topup'] !== undefined) {
+                  console.log('topup');
+                  console.log(d['client']['data']['res'].resultDesc);
+                  console.log(d['client']['data']['res'].msisdn);
+                }
+              }
+              if (d['client']['data']['command'] === 'send-check-balance') {
+                console.log(d.client.data.message);
+              }
+              if (d['client']['data']['command'] === 'recieved-check-balance') {
+                console.log(d.client.data.message);
+                if (d['client']['data']['checkbalance'] !== undefined) {
+                  console.log('topup');
+                  console.log(d['client']['data']['res'].resultDesc);
+                  console.log(d['client']['data']['res'].msisdn);
+                }
+              }
+              break;
+            case 'error-changed':
+              console.log(d['client']['data']['message']);
+              break;
+            case 'login-changed':
+              console.log(d['client']['logintoken'] + '   -   ' + d['client']['logintime']);
+              break;
+            case 'message-changed':
+              console.log(d['client']['data']['message']);
+              break;
+            case 'forgot-changed':
+              console.log(d);
+              break;
+            case 'phone-changed':
+              console.log(d);
+              break;
+            case 'secret-changed':
+              console.log(d);
+              break;
+            case 'online-changed':
+              console.log(d);
+              break;
+            case 'send-sms':
+              console.log(d);
+              break;
+            case 'topup':
+              console.log(d);
+              break;
+            case 'check-balance':
+              console.log(d);
+              break;
+            default:
+              break;
+          }
+          // // console.log(msg);
         }
-        // // console.log(msg);
       }
     }
+
 
   }
   readCurrentUserDetail(c: any): any {
@@ -463,7 +510,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // this._currentUserdetail.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
       this.websocketDataServiceService.send_confirm_phone_sms(this._currentUserdetail);
     } else {
-      alert('login first');
+      console.log('login first');
     }
   }
   checkSMSConfirm($event: any) {
@@ -471,11 +518,12 @@ export class AppComponent implements OnInit, OnDestroy {
       if (this._newUser.data['secret'] !== undefined) {
         if (this._newUser.data['secret'].length === 6) {
           // this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
-          this.websocketDataServiceService.check_confirm_phone_sms(this._newUser);
+          this._newUser.data.user = this._currentUserdetail;
+          this.websocketDataServiceService.check_confirm_phone_sms(this._newUser.data);
         }
       }
     } else {
-      alert('login first');
+      console.log('login first');
     }
 
   }
@@ -484,11 +532,12 @@ export class AppComponent implements OnInit, OnDestroy {
       if (this._newUser.data['secret'] !== undefined) {
         if (this._newUser.data['secret'].length === 6) {
           // this._newUser.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
+          this._newUser.data.user = this._currentUserdetail;
           this.websocketDataServiceService.update_confirm_phone(this._newUser.data);
         }
       }
     } else {
-      alert('login first');
+      console.log('login first');
     }
   }
   goTo(com) {

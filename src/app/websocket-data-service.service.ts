@@ -93,26 +93,42 @@ export class WebsocketDataServiceService implements OnInit {
           // console.log(d['command'] + d['command2']);
           switch (d['command']) {
             case 'notification-changed':
-              this._server_event.push(d);
-              this.refreshServerEvent();
-              // // console.log(this._client.data['message']);
-              if (d['client']['data']['sms'] !== undefined) {
-                // console.log('SMS');
-                // console.log(d['client']['data']['res'].resultDesc);
-                // console.log(d['client']['data']['res'].msisdn);
+              console.log(d);
+              if (d['client']['data']['command'] === 'send-sms') {
+                console.log(d['client'].data.message);
               }
-              if (d['client']['data']['topup'] !== undefined) {
-                // console.log('topup');
-                // console.log(d['client']['data']['res'].resultDesc);
-                // console.log(d['client']['data']['res'].msisdn);
+              if (d['client']['data']['command'] === 'recieved-sms') {
+                console.log(d['client'].data.message);
+                if (d['client']['data']['sms'] !== undefined) {
+                  console.log('SMS');
+                  console.log(d['client']['data']['res'].resultDesc);
+                  console.log(d['client']['data']['res'].msisdn);
+                }
               }
-              if (d['client']['data']['checkbalance'] !== undefined) {
-                // console.log('check balance');
-                // console.log(d['client']['data']['res'].resultDesc);
-                // console.log(d['client']['data']['res'].msisdn);
+              if (d['client']['data']['command'] === 'send-topup') {
+                console.log(d['client'].data.message);
+              }
+              if (d['client']['data']['command'] === 'recieved-topup') {
+                console.log(d['client'].data.message);
+                if (d['client']['data']['topup'] !== undefined) {
+                  console.log('topup');
+                  console.log(d['client']['data']['res'].resultDesc);
+                  console.log(d['client']['data']['res'].msisdn);
+                }
+              }
+              if (d['client']['data']['command'] === 'send-check-balance') {
+                console.log(d['client'].data.message);
+              }
+              if (d['client']['data']['command'] === 'recieved-check-balance') {
+                console.log(d['client'].data.message);
+                if (d['client']['data']['checkbalance'] !== undefined) {
+                  console.log('topup');
+                  console.log(d['client']['data']['res'].resultDesc);
+                  console.log(d['client']['data']['res'].msisdn);
+                }
               }
               break;
-            case 'error-changed':
+             case 'error-changed':
             console.log(d);
               break;
             case 'login-changed':
@@ -311,6 +327,13 @@ export class WebsocketDataServiceService implements OnInit {
                 this.refreshUserDetails();
               }
               break;
+            case 'update-confirm-phone-sms':
+            if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+              // console.log(this._client.data['message']);
+            } else {
+                console.log(this._client.data['message']);
+            }
+            break;
             default:
               break;
           }
@@ -547,9 +570,9 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
-  update_confirm_phone(user) {
+  update_confirm_phone(data) {
     this._message = JSON.parse(JSON.stringify(this._client));
-    this._message.data['user'] = user;
+    this._message.data = data;
     this._message.data['command'] = 'update-confirm-phone-sms';
     // this._client.data['user'].phonenumber=phone;
     this._message.data.transaction = this.createTransaction();
