@@ -89,8 +89,9 @@ export class WebsocketDataServiceService implements OnInit {
       // // alert(d);
       if (d !== undefined) {
         if (d['command'] !== undefined) {
-          // console.log('changed from server');
+          console.log('changed from server');
           // console.log(d['command'] + d['command2']);
+          this._server_event.push(d);
           switch (d['command']) {
             case 'notification-changed':
               console.log(d);

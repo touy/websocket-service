@@ -306,17 +306,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
   readServerEvent(event: any): any {
-    if (event === undefined) {
-      return;
-    }
-    let e = event;
-    if (!Array.isArray(event)) {
-      e = [event];
-    }
-    for (let index = 0; index < e.length; index++) {
-      const d = e[index];
+    if (event !== undefined) {
+      const d = this._server_event[this._server_event.length - 1];
       if (d !== undefined) {
-        this._server_event.push(event);
+        // this._server_event.push(event);
         console.log('changed from server');
         // console.log(d);
         if (d['command'] !== undefined) {
@@ -395,6 +388,7 @@ export class AppComponent implements OnInit, OnDestroy {
         }
       }
     }
+
 
 
   }
