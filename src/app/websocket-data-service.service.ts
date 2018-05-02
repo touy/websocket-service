@@ -6,6 +6,9 @@ import { ChatService, Message } from './chat.service';
 import { v4 as uuid } from 'uuid';
 import { Moment } from 'moment';
 import * as moment from 'moment-timezone';
+import PouchDB from 'pouchdb';
+import { PouchDBService } from './pouchdb.service';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 
 @Injectable()
 export class WebsocketDataServiceService implements OnInit {
@@ -18,6 +21,7 @@ export class WebsocketDataServiceService implements OnInit {
   private _currentUserdetail: any;
   private _server_event: any = [];
   private _moment: Moment;
+  private _pouch: PouchDB.Database;
   private _client: Message = {
     gui: '',
     username: '',
@@ -36,6 +40,11 @@ export class WebsocketDataServiceService implements OnInit {
   // private currentMessage = this.clientSource.asObservable();
   // private serverEvent = this.eventSource.asObservable();
   heartbeat_interval = setInterval(() => {
+    console.log(this._client);
+    if (!this._client.gui) {
+      console.log('ERROR no shake hands');
+      return;
+    }
     const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
     // if (this.heartbeat_interval === undefined) {
     //   return;
@@ -60,6 +69,7 @@ export class WebsocketDataServiceService implements OnInit {
   }, 1000 * 3);
 
   public refreshNewUserMessage() {
+
     this.newUserSource.next(this._newUser);
   }
   public refreshOtherMessage() {
@@ -77,13 +87,13 @@ export class WebsocketDataServiceService implements OnInit {
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     // console.log('init');
-
     if (!this._client.data['user'] || this._client.data['user'] === undefined) {
       this._client.data['user'] = {};
     }
     this._message = JSON.parse(JSON.stringify(this._client));
   }
-  constructor(private chatService: ChatService) {
+  constructor(private chatService: ChatService, private sanitizer: DomSanitizer) {
+    this._pouch = new PouchDB('_client');
     chatService.messages.subscribe(msg => {
       const d = msg;
       // // alert(d);
@@ -92,13 +102,14 @@ export class WebsocketDataServiceService implements OnInit {
           console.log('changed from server');
           // console.log(d['command'] + d['command2']);
           this._server_event.push(d);
+          // console.log(d);
           switch (d['command']) {
             case 'notification-changed':
               console.log(d);
               if (d['client']['data']['command'] === 'send-sms') {
                 console.log(d['client'].data.message);
               }
-              if (d['client']['data']['command'] === 'recieved-sms') {
+              if (d['client']['data']['command'] === 'received-sms') {
                 console.log(d['client'].data.message);
                 if (d['client']['data']['sms'] !== undefined) {
                   console.log('SMS');
@@ -109,7 +120,7 @@ export class WebsocketDataServiceService implements OnInit {
               if (d['client']['data']['command'] === 'send-topup') {
                 console.log(d['client'].data.message);
               }
-              if (d['client']['data']['command'] === 'recieved-topup') {
+              if (d['client']['data']['command'] === 'received-topup') {
                 console.log(d['client'].data.message);
                 if (d['client']['data']['topup'] !== undefined) {
                   console.log('topup');
@@ -120,7 +131,7 @@ export class WebsocketDataServiceService implements OnInit {
               if (d['client']['data']['command'] === 'send-check-balance') {
                 console.log(d['client'].data.message);
               }
-              if (d['client']['data']['command'] === 'recieved-check-balance') {
+              if (d['client']['data']['command'] === 'received-check-balance') {
                 console.log(d['client'].data.message);
                 if (d['client']['data']['checkbalance'] !== undefined) {
                   console.log('topup');
@@ -129,25 +140,25 @@ export class WebsocketDataServiceService implements OnInit {
                 }
               }
               break;
-             case 'error-changed':
-            console.log(d);
+            case 'error-changed':
+              console.log(d);
               break;
             case 'login-changed':
-            console.log(d);
+              console.log(d);
               break;
             case 'message-changed':
               // console.log(d['client']['data']['message']);
               break;
             case 'forgot-changed':
-            console.log(d);
-              break;
-              case 'phone-changed':
               console.log(d);
               break;
-              case 'secret-changed':
+            case 'phone-changed':
               console.log(d);
               break;
-              case 'online-changed':
+            case 'secret-changed':
+              console.log(d);
+              break;
+            case 'online-changed':
               console.log(d);
               break;
 
@@ -159,7 +170,7 @@ export class WebsocketDataServiceService implements OnInit {
           this._client = msg;
           this.refreshClient();
           // console.log('return from server');
-          // console.log(msg);
+          console.log(msg);
           // console.log(this._client.data['command'] + this._client.data['command2']);
           switch (this._client.data['command']) {
             case 'heart-beat':
@@ -329,12 +340,12 @@ export class WebsocketDataServiceService implements OnInit {
               }
               break;
             case 'update-confirm-phone-sms':
-            if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-              // console.log(this._client.data['message']);
-            } else {
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                // console.log(this._client.data['message']);
+              } else {
                 console.log(this._client.data['message']);
-            }
-            break;
+              }
+              break;
             default:
               break;
           }
@@ -613,17 +624,20 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }
-  getTransaction(c) {
-    this._message = JSON.parse(JSON.stringify(c));
-    this._message.command = 'get-transaction';
+  getTransaction(data) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = data;
+    this._message.data.command = 'get-transaction';
     this.sendMsg();
   }
-  checkTransaction(c) {
-    this._message = JSON.parse(JSON.stringify(c));
+  checkTransaction(data) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = data;
     this._message.data.transaction = this.createTransaction();
-    this._message.command = 'check-transaction';
+    this._message.data.command = 'check-transaction';
     this.sendMsg();
   }
+
   createTransaction() {
     return { transactionid: uuid(), transactiontime: new Date() };
   }
@@ -633,7 +647,31 @@ export class WebsocketDataServiceService implements OnInit {
     // moment.tz('Asia/Vientiane').format();
     // return this._moment.tz(fromTZ, 'Asia/Vientiane').format();
   }
+  binary2imageurl(bin) {
+    const l = bin.length;
+    const urlCreator = window.URL;
+    const array = new Uint8Array(l);
+    for (let i = 0; i < l; i++) {
+      array[i] = bin.charCodeAt(i);
+    }
+    const blob = new Blob([array], { type: 'image/jpeg' });
+    return this.sanitizer.bypassSecurityTrustUrl(
+      urlCreator.createObjectURL(blob));
 
+  }
+  arraybuffer2imageurl(blob: File) {
+    const urlCreator = window.URL;
+    // const blob = new Blob([ab]);
+    return this.sanitizer.bypassSecurityTrustUrl(
+      urlCreator.createObjectURL(blob));
+  }
+  upload(data) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = data;
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'upload';
+    this.sendMsg();
+  }
   //  uploadPhoto() {
   //   this._client.data = {};
   //   this._client.data['user'] = {};

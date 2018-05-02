@@ -263,3 +263,25 @@
 </div>
 <button (click)="getForgotKeys()">get reset keys</button>
 <button (click)="resetPassword()">Reset password</button>
+
+
+<h1>
+  upload
+</h1>
+<img [src]="_currentUserdetail.testurl===undefined ?'' : _currentUserdetail.testurl" />
+<div class="form-group">
+  <label class="col-md-4 control-label" for="upload">Upload</label>
+  <div class="col-md-4">
+    <input 
+    (change)="uploadChange($event)"
+      name="upload" type="file" placeholder="file" class="form-control input-md" required>
+  </div>
+</div>
+<button (click)="upload()">upload</button>
+<div *ngIf="_currentUserdetail.photo">
+    
+  <ul>
+    <li *ngFor="let image of _currentUserdetail.photo">
+          <img [src]="image.url" />
+    </li>
+  </ul>

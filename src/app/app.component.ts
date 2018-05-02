@@ -5,6 +5,7 @@ import { WebsocketDataServiceService } from './websocket-data-service.service';
 import { ChatService, Message } from './chat.service';
 import { WebsocketService } from './websocket.service';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -87,6 +88,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this._newUser.data.user = {};
     this._message = JSON.parse(JSON.stringify(this._client));
     this._currentUserdetail = {};
+
     this._userDetailsStr = '';
     this._otherMessage = {};
   }
@@ -139,6 +141,7 @@ export class AppComponent implements OnInit, OnDestroy {
             console.log(this._client.data['message']);
           } else {
             console.log('LOGIN OK');
+            this.saveClient();
           }
           break;
         case 'get-client':
@@ -161,6 +164,7 @@ export class AppComponent implements OnInit, OnDestroy {
             console.log(this._client.data['message']);
           } else {
             console.log('LOGOUT OK');
+            this.saveClient();
           }
           break;
         case 'get-profile':
@@ -429,7 +433,7 @@ export class AppComponent implements OnInit, OnDestroy {
     // this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     // this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.shakeHands();
-    // this.saveClient();
+    this.saveClient();
   }
   ping_test() {
     // this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
@@ -445,13 +449,13 @@ export class AppComponent implements OnInit, OnDestroy {
     // this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.login(this._loginUser); // return to this._client
     this.clearJSONValue(this._loginUser);
-    this.saveClient();
+    // this.saveClient();
   }
   logout() {
     // this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     // this.websocketDataServiceService.refreshClient();
     this.websocketDataServiceService.logout();
-    this.saveClient();
+    // this.saveClient();
   }
   getUserDetails() {
     // this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
@@ -599,6 +603,63 @@ export class AppComponent implements OnInit, OnDestroy {
     this._trans.push(x = this.websocketDataServiceService.createTransaction());
     return x;
   }
+  uploadChange($event): void {
+    const file: File = $event.target.files[0];
+    const myReader: FileReader = new FileReader();
+    if (file === undefined) {
+      return;
+    }
+    // console.log(file.lastModifiedDate);
+    // console.log(file.size);
+    const photo = {
+      arraybuffer: file,
+      url: {},
+      name: ((Math.random() * 1000000) + 1) + '_' + file.name,
+      lastmodifieddate: file.lastModifiedDate,
+      size: file.size,
+      type: file.type,
+    };
+    if (this._currentUserdetail.photo === undefined) {
+      this._currentUserdetail.photo = [];
+    }
+    photo.url = this.arraybuffer2imageurl(file);
+    myReader.readAsBinaryString(file);
+    myReader.onloadend = (e) => {
+      photo.arraybuffer = myReader.result;
+      // const a_blob = new Blob([myReader.result], { type: 'binary' });
+      // photo.url = window.URL.createObjectURL(a_blob);
+      // alert(this._currentUserdetail.photo.length);
+      // this.binary2blob(photo.arraybuffer);
+      this._currentUserdetail.testurl = this.binary2blob(photo.arraybuffer);
+      this._currentUserdetail.photo.push(photo);
+    };
+  }
+  arraybuffer2imageurl(ab: File) {
+    return this.websocketDataServiceService.arraybuffer2imageurl(ab);
+  }
+  clearObjectUrlBeforeUpload(array) {
+    for (let index = 0; index < array.length; index++) {
+      const element = array[index];
+      for (const key in element) {
+        if (key.toLowerCase().indexOf('url') > -1) {
+          element[key] = '';
+        }
+      }
+    }
+  }
 
+  binary2blob(bin) {
+    return this.websocketDataServiceService.binary2imageurl(bin);
+  }
+  upload() {
+    // console.log(this._currentUserdetail);
+    const d = {};
+    d['data'] = {};
+    d['data'].user = this._currentUserdetail;
+    const d2 = JSON.parse(JSON.stringify(d));
+    this.clearObjectUrlBeforeUpload(d2['data'].user.photo);
+    this.websocketDataServiceService.upload(d2['data']);
+    // this.websocketDataServiceService.getForgotKeys(d);
+  }
   /////////////// END SENDING
 }

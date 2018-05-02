@@ -34,6 +34,7 @@
     "@types/jasminewd2": "~2.0.2",
     "@types/moment-timezone": "^0.5.4",
     "@types/node": "~6.0.60",
+    "@types/pouchdb": "^6.3.2",
     "@types/uuid": "^3.4.3",
     "codelyzer": "^4.0.1",
     "jasmine-core": "~2.8.0",

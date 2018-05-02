@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';  // <<<< import it here
 import { AppComponent } from './app.component';
 import { Comp1Component } from './comp1/comp1.component';
+import {PouchDBService} from './pouchdb.service';
 // import {routes} from './app.router';
 
 @NgModule({
@@ -19,7 +20,7 @@ import { Comp1Component } from './comp1/comp1.component';
       { path: 'comp1', component: Comp1Component }
     ]),
   ],
-  providers: [],
+  providers: [PouchDBService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

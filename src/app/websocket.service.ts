@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import * as Rx from 'rxjs/Rx';
 
 @Injectable()
-export class WebsocketService  {
+export class WebsocketService {
   constructor() { }
 
   private subject: Rx.Subject<MessageEvent>;
@@ -18,7 +18,7 @@ export class WebsocketService  {
 
   private create(url): Rx.Subject<MessageEvent> {
     const ws = new WebSocket(url);
-
+    ws.binaryType = 'arraybuffer';
     const observable = Rx.Observable.create((obs: Rx.Observer<MessageEvent>) => {
       ws.onmessage = obs.next.bind(obs);
       ws.onerror = obs.error.bind(obs);
@@ -28,7 +28,9 @@ export class WebsocketService  {
     const observer = {
       next: (data: Object) => {
         if (ws.readyState === WebSocket.OPEN) {
-          ws.send(JSON.stringify(data));
+          // ws.send(JSON.stringify(data));
+          const buf = Buffer.from(JSON.stringify(data));
+          ws.send(buf);
         }
       }
     };
