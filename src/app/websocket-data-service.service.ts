@@ -672,6 +672,14 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.command = 'upload';
     this.sendMsg();
   }
+  getUpLoad(data) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-upload';
+    this._message.data.user = data;
+    this.sendMsg();
+  }
   //  uploadPhoto() {
   //   this._client.data = {};
   //   this._client.data['user'] = {};

@@ -136,6 +136,23 @@ export class AppComponent implements OnInit, OnDestroy {
           console.log('ping OK');
           // // alert(this._client.data['message']);
           break;
+        case 'upload':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            console.log(this._client.data['message']);
+          } else {
+            console.log(this._client.data['message']);
+          }
+          break;
+        case 'get-upload':
+          if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            console.log(this._client.data['message']);
+          } else {
+            console.log(this._client.data['message']);
+            let u = this._client.data.user;
+            u.photo[0].url = this.binary2blob(u.photo[0].arraybuffer);
+            this._currentUserdetail.photo.push(u.photo[0]);
+          }
+          break;
         case 'login':
           if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
             console.log(this._client.data['message']);
@@ -602,6 +619,10 @@ export class AppComponent implements OnInit, OnDestroy {
     let x;
     this._trans.push(x = this.websocketDataServiceService.createTransaction());
     return x;
+  }
+  getUpload() {
+    console.log(this._currentUserdetail);
+    this.websocketDataServiceService.getUpLoad(this._currentUserdetail);
   }
   uploadChange($event): void {
     const file: File = $event.target.files[0];
