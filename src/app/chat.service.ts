@@ -24,8 +24,22 @@ export class ChatService {
     this.messages = <Subject<Message>>wsService
       .connect(CHAT_URL)
       .map((response: MessageEvent): Message => {
-        const data = JSON.parse(response.data.toString());
+        // const buf = JSON.stringify(response.data);
+        // console.log(response.data);
+        let d;
+        // console.log();
+        if (typeof (response.data) !== 'string') {
+          d = this.ab2str(response.data);
+        } else {
+          d = response.data;
+          // console.log('here string');
+        }
+        // console.log(d+'+++ AB');
+        const data = JSON.parse(d);
         return data;
       });
+  }
+  ab2str(buf) {
+    return String.fromCharCode.apply(null, new Uint8Array(buf));
   }
 }

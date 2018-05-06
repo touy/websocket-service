@@ -63,10 +63,10 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data['command'] = 'heart-beat';
     this._message.data['command2'] = 'interval ' + this.heartbeat_interval;
     this.sendMsg();
-  }, 1000 * 30);
+  }, 1000 * 60);
   timeOut_runner = setTimeout(() => {
     this.shakeHands();
-  }, 1000 * 3);
+  }, 1000 * 1);
 
   public refreshNewUserMessage() {
 
@@ -379,6 +379,7 @@ export class WebsocketDataServiceService implements OnInit {
     if (c) {
       this._client = c;
     }
+    this.refreshClient();
     return this._client;
   }
   setClient(c): void {
@@ -409,7 +410,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   stopService() {
     clearInterval(this.heartbeat_interval);
-    delete this.heartbeat_interval;
+    // delete this.heartbeat_interval;
   }
   shakeHands() {
     if (!this._client.gui || this._client.gui === undefined) {
@@ -423,10 +424,12 @@ export class WebsocketDataServiceService implements OnInit {
     }
     sessionStorage.setItem('firstHandShake', '1');
     // console.log('before shakehands' + JSON.stringify(this._client));
-    this._message = JSON.parse(JSON.stringify(this._client));
-    this._message.data['command'] = 'shake-hands';
-    this._message.data.transaction = this.createTransaction();
-    this.sendMsg();
+    if (!this._client.gui || this._client.gui === undefined) {
+      this._message = JSON.parse(JSON.stringify(this._client));
+      this._message.data['command'] = 'shake-hands';
+      this._message.data.transaction = this.createTransaction();
+      this.sendMsg();
+    }
     // // alert('shake handds');
   }
 
@@ -455,6 +458,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = data;
     this._message.data['user'] = {};
     this._message.data['command'] = 'get-profile';
+    console.log(this._message);
     this._message.data.transaction = this.createTransaction();
     this.sendMsg();
     // } else { return // alert('login first'); }
@@ -658,6 +662,11 @@ export class WebsocketDataServiceService implements OnInit {
     return this.sanitizer.bypassSecurityTrustUrl(
       urlCreator.createObjectURL(blob));
 
+  }
+  createSafeURL(url) {
+    const urlCreator = window.URL;
+    console.log(url);
+    return this.sanitizer.bypassSecurityTrustUrl(url);
   }
   arraybuffer2imageurl(blob: File) {
     const urlCreator = window.URL;

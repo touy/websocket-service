@@ -66,10 +66,19 @@
   <h1>
     Get user details
   </h1>
+  <div *ngIf="_currentUserdetail.photo">
+    
+    <ul>
+      <li *ngFor="let image of _currentUserdetail.photo">
+            <img [src]="image.url" />
+      </li>
+    </ul>
+  </div>
   <textarea cols="60" rows="9" [(ngModel)]="_userDetailsStr">
 
   </textarea>
   <br/>
+  
   <button (click)="getUserDetails()"> get user details</button>
   <button (click)="updateUserDetails()"> update details</button>
 </div>

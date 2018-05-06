@@ -51,7 +51,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // this._server_event.push(events);
       this.readServerEvent(events);
     }));
-    this._subs.push(this.websocketDataServiceService.currentUserSource.subscribe(user => {
+    this._subs.push(this.websocketDataServiceService.currentUserSource.retry().subscribe(user => {
       // console.log('user details is');
       // console.log(user);
       // this._currentUserdetail = user;
@@ -105,10 +105,9 @@ export class AppComponent implements OnInit, OnDestroy {
     sessionStorage.setItem('firstHeartBeat', '');
     if (!this._client.gui || this._client.gui === undefined) {
       this._client = this.websocketDataServiceService.getClient();
-      this.websocketDataServiceService.refreshClient();
       console.log('client loaded');
     } else {
-      this.saveClient();
+      // this.saveClient();
     }
   }
   /// INIT FUNCTIONS
@@ -149,8 +148,11 @@ export class AppComponent implements OnInit, OnDestroy {
           } else {
             console.log(this._client.data['message']);
             let u = this._client.data.user;
-            u.photo[0].url = this.binary2blob(u.photo[0].arraybuffer);
-            this._currentUserdetail.photo.push(u.photo[0]);
+            // u.photo[0].url = this.binary2blob(u.photo[0].arraybuffer);
+            // u.photo[0].url=this.createSafeURL(u.photo[0].arraybuffer);
+            u.photo[0].url = this.createSafeURL('https://octoperf.com/img/blog/angular2.png');
+
+            this._currentUserdetail = u;
           }
           break;
         case 'login':
@@ -190,6 +192,7 @@ export class AppComponent implements OnInit, OnDestroy {
           } else {
             console.log(this._client.data['user']);
             const u = JSON.parse(JSON.stringify(c.data['user']));
+            this._userDetailsStr = JSON.stringify(u);
             this._currentUserdetail = u;
             console.log('get user details ok');
           }
@@ -668,7 +671,9 @@ export class AppComponent implements OnInit, OnDestroy {
       }
     }
   }
-
+  createSafeURL(url) {
+    return this.websocketDataServiceService.createSafeURL(url);
+  }
   binary2blob(bin) {
     return this.websocketDataServiceService.binary2imageurl(bin);
   }
