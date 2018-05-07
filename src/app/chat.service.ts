@@ -4,7 +4,7 @@ import { Observable, Subject } from 'rxjs/Rx';
 import { WebsocketService } from './websocket.service';
 import { DOCUMENT } from '@angular/platform-browser';
 
-let CHAT_URL = 'ws://localhost:6688/'; // user web service
+const CHAT_URL = 'ws://nonav.ent:6688/'; // user web service
 
 export interface Message {
   gui: string;

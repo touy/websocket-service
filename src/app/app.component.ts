@@ -169,7 +169,7 @@ export class AppComponent implements OnInit, OnDestroy {
             } else {
               console.log(this._client.data['message']);
               const u = this._client.data.user;
-              this.convertToDataURLviaCanvas('http://localhost:6688' + u.photo[0].arraybuffer, 'image/jpeg').then(base64Img => {
+              this.convertToDataURLviaCanvas('http://nonav.net:6688' + u.photo[0].arraybuffer, 'image/jpeg').then(base64Img => {
                 // do whatever you need here, with the base64 data
                 u.photo[0].arraybuffer = base64Img;
                 u.photo[0].url = this.createSafeURL(u.photo[0].arraybuffer);
