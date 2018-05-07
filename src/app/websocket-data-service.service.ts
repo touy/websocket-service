@@ -102,6 +102,7 @@ export class WebsocketDataServiceService implements OnInit {
           console.log('changed from server');
           // console.log(d['command'] + d['command2']);
           this._server_event.push(d);
+          this.refreshServerEvent();
           // console.log(d);
           switch (d['command']) {
             case 'notification-changed':
@@ -142,6 +143,9 @@ export class WebsocketDataServiceService implements OnInit {
               break;
             case 'error-changed':
               console.log(d);
+              break;
+            case 'msg-changed':
+              console.log(d['msg']);
               break;
             case 'login-changed':
               console.log(d);
@@ -665,14 +669,24 @@ export class WebsocketDataServiceService implements OnInit {
   }
   createSafeURL(url) {
     const urlCreator = window.URL;
-    console.log(url);
+    // console.log(url);
     return this.sanitizer.bypassSecurityTrustUrl(url);
   }
-  arraybuffer2imageurl(blob: File) {
+  file2imageurl(f: File) {
     const urlCreator = window.URL;
     // const blob = new Blob([ab]);
     return this.sanitizer.bypassSecurityTrustUrl(
-      urlCreator.createObjectURL(blob));
+      urlCreator.createObjectURL(f));
+  }
+  arraybuffer2imageurl(ab: ArrayBuffer, type: string) {
+    const urlCreator = window.URL;
+    // const blob = new Blob([ab]);
+    const file = new Blob([ab], {
+      type: type
+    });
+    console.log(file);
+    return this.sanitizer.bypassSecurityTrustUrl(
+      urlCreator.createObjectURL(file));
   }
   upload(data) {
     this._message = JSON.parse(JSON.stringify(this._client));

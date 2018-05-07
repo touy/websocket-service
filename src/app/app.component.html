@@ -294,3 +294,34 @@
           <img [src]="image.url" />
     </li>
   </ul>
+
+
+  <h1>
+    upload
+  </h1>
+  <button (click)='getUpload()'>Get upload</button>
+  <div class="form-group">
+    <label class="col-md-4 control-label" for="upload">Upload</label>
+    <div class="col-md-4">
+      <input 
+      (change)="uploadChange($event)"
+        name="upload" type="file" placeholder="file" class="form-control input-md" required>
+    </div>
+  </div>
+  <button (click)="upload()">upload</button>
+  <div *ngIf="_msg">
+      
+    <ul>
+      <!-- <li *ngFor="let m of _msg">
+           <span>{{m.sender}}:{{m.content}}</span>
+           sent:<div *ngIf="m.sent"></div>
+           received:<div *ngIf="let r of m.received">
+            {{r.username}}/{{r.received}}
+           </div>
+           read:<div *ngIf="let r of m.read">
+            {{r.username}}/{{r.read}}
+           </div>
+
+      </li> -->
+    </ul>
+
