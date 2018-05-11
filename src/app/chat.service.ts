@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 // tslint:disable-next-line:import-blacklist
-import { Observable, Subject } from 'rxjs/Rx';
+import { Observable, Subject } from 'rxjs';
 import { WebsocketService } from './websocket.service';
 import { DOCUMENT } from '@angular/platform-browser';
-
-let CHAT_URL = 'ws://nonav.ent:6688/'; // user web service
+import {map} from 'rxjs/Operators'
+let CHAT_URL = 'ws://nonav.ent:6698/'; // ice-maker web service
 
 export interface Message {
   gui: string;
@@ -21,8 +21,7 @@ export class ChatService {
   constructor(wsService: WebsocketService) {
     // CHAT_URL = 'ws://' + document.location.hostname + ':6688';
     this.messages = <Subject<Message>>wsService
-      .connect(CHAT_URL)
-      .map((response: MessageEvent): Message => {
+      .connect(CHAT_URL).pipe(map((response: MessageEvent): Message => {
         // const buf = JSON.stringify(response.data);
         // console.log(response.data);
         let d;
@@ -36,7 +35,7 @@ export class ChatService {
         // console.log(d+'+++ AB');
         const data = JSON.parse(d);
         return data;
-      });
+      }));
   }
   seturl(url) {
     CHAT_URL = url;

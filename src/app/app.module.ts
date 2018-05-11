@@ -5,18 +5,20 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';  // <<<< impo
 import { AppComponent } from './app.component';
 import { Comp1Component } from './comp1/comp1.component';
 import {PouchDBService} from './pouchdb.service';
+import { IceMakerComponent } from './ice-maker/ice-maker.component';
 // import {routes} from './app.router';
 
 @NgModule({
   declarations: [
     AppComponent,
-    Comp1Component
+    Comp1Component,
+    IceMakerComponent
   ],
   imports: [
     BrowserModule, FormsModule, ReactiveFormsModule,
     RouterModule.forRoot([
       { path: '', component: AppComponent },
-      { path: 'app', component: AppComponent },
+      { path: 'icemaker', component: IceMakerComponent },
       { path: 'comp1', component: Comp1Component }
     ]),
   ],

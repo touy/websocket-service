@@ -33,6 +33,15 @@ export class AppComponent implements OnInit, OnDestroy {
   private _subs: any = [];
   private _trans: any = [];
 
+
+  //// ICE-MAKER
+  private _currentDevice: any;
+  private _arrayDevices: any;
+  private _currentPayment: any;
+  private _currentSubUser: any;
+  private _currentBill: any;
+  private _arrayBills: any;
+  private _arrayPayment: any;
   /// WEBSOCKET LAUNCHING
   constructor(private websocketDataServiceService: WebsocketDataServiceService, private router: Router) {
     this.loadClient();
@@ -52,7 +61,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.readServerEvent(events);
       // this._server_event.lastIndexOf()
     }));
-    this._subs.push(this.websocketDataServiceService.currentUserSource.retry().subscribe(user => {
+    this._subs.push(this.websocketDataServiceService.currentUserSource.subscribe(user => {
       // console.log('user details is');
       // console.log(user);
       // this._currentUserdetail = user;
@@ -63,6 +72,18 @@ export class AppComponent implements OnInit, OnDestroy {
     this._subs.push(this.websocketDataServiceService.otherSource.subscribe(msg => {
       // this._otherMessage = msg;
       this.readOtherMessage(msg);
+    }));
+    this._subs.push(this.websocketDataServiceService.currentBillSource.subscribe(msg => {
+      this.readBill(msg);
+    }));
+    this._subs.push(this.websocketDataServiceService.currentDeviceSource.subscribe(msg => {
+      this.readDevice(msg);
+    }));
+    this._subs.push(this.websocketDataServiceService.currentPaymentSource.subscribe(msg => {
+      this.readPayment(msg);
+    }));
+    this._subs.push(this.websocketDataServiceService.currentSubUserSource.subscribe(msg => {
+      this.readSubUser(msg);
     }));
 
   }
@@ -454,6 +475,39 @@ export class AppComponent implements OnInit, OnDestroy {
       this._message = m;
     }
   }
+  readBill(m: any) {
+    if (m !== undefined) {
+      if (Array.isArray(m)) {
+        this._currentBill = m;
+      } else {
+        this._arrayBills = m;
+      }
+    }
+  }
+  readSubUser(m: any) {
+    if (m !== undefined) {
+      this._currentSubUser = m;
+    }
+  }
+  readDevice(m: any) {
+    if (m !== undefined) {
+      if (Array.isArray(m)) {
+        this._arrayDevices = m;
+      } else {
+        this._currentDevice = m;
+      }
+    }
+  }
+  readPayment(m: any) {
+    if (m !== undefined) {
+      if (Array.isArray(m)) {
+        this._currentPayment = m;
+      } else {
+        this._arrayPayment = m;
+      }
+    }
+  }
+
   /// END RECEIVING
 
 
@@ -732,4 +786,52 @@ export class AppComponent implements OnInit, OnDestroy {
     // this.websocketDataServiceService.getForgotKeys(d);
   }
   /////////////// END SENDING
+  /// ICEMAKER ----------------------------------------
+
+
+  getDevices() {
+    this.websocketDataServiceService.getDevices();
+  }
+  getDeviceInfo() {
+    const d = this._currentDevice;
+    this.websocketDataServiceService.getDeviceInfo(d);
+  }
+  approvePayment() {
+    const p = this._currentPayment;
+    this.websocketDataServiceService.approvePayment(p);
+  }
+  getAllPayment() {
+    this.websocketDataServiceService.getAllPayment();
+  }
+  makePayment() {
+    const p = this._currentPayment;
+    this.websocketDataServiceService.makePayment(p);
+  }
+  registerNewUser() {
+    const u = this._currentSubUser;
+    this.websocketDataServiceService.registerNewUser(u);
+  }
+  registerSaleUser() {
+    const u = this._currentSubUser;
+    this.websocketDataServiceService.registerSaleUser(u);
+  }
+  registerFinanceUser() {
+    const u = this._currentSubUser;
+    this.websocketDataServiceService.registerFinacneUser(u);
+  }
+  updateDeviceOwners() {
+    const d = this._currentDevice;
+    this.websocketDataServiceService.updateDevice(d);
+  }
+  updateDevice() {
+    const d = this._currentDevice;
+    this.websocketDataServiceService.updateDevice(d);
+  }
+  getProductionTime() {
+    this.websocketDataServiceService.getProductionTime();
+  }
+  getLatestWorkingStatus() {
+
+    this.websocketDataServiceService.getLatestWorkingStatus();
+  }
 }

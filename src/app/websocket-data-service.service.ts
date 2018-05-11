@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 // import { Observable } from 'rxjs/Rx';
 import { WebsocketService } from './websocket.service';
 import { ChatService, Message } from './chat.service';
@@ -30,6 +30,20 @@ export class WebsocketDataServiceService implements OnInit {
     loginip: '',
     data: {}
   };
+
+  /// ICE-MAKER
+  private _currentDevice: any;
+  private _currentPayment: any;
+  private _currentSubUser: any;
+  private _currentBill: any;
+  private _arrayDevices: any;
+  private _arrayBills: any;
+  private _arrayPayment: any;
+  private _arraySubUser: any;
+
+
+
+
   private _otherMessage: any;
 
   public clientSource = new BehaviorSubject<Message>(this._client);
@@ -37,6 +51,11 @@ export class WebsocketDataServiceService implements OnInit {
   public currentUserSource = new BehaviorSubject<any>(this._currentUserdetail);
   public eventSource = new BehaviorSubject<any>(this._server_event);
   public otherSource = new BehaviorSubject<any>(this._otherMessage);
+
+  public currentDeviceSource = new BehaviorSubject<any>(this._currentDevice);
+  public currentPaymentSource = new BehaviorSubject<any>(this._currentPayment);
+  public currentSubUserSource = new BehaviorSubject<any>(this._currentSubUser);
+  public currentBillSource = new BehaviorSubject<any>(this._currentBill);
   // private currentMessage = this.clientSource.asObservable();
   // private serverEvent = this.eventSource.asObservable();
   heartbeat_interval = setInterval(() => {
@@ -67,10 +86,47 @@ export class WebsocketDataServiceService implements OnInit {
   timeOut_runner = setTimeout(() => {
     this.shakeHands();
   }, 1000 * 1);
+  public refreshSubUserMessage() {
+    this.currentSubUserSource.next(this._currentSubUser);
+  }
+  public refreshCurrentDevice() {
+
+    this.currentDeviceSource.next(this._currentDevice);
+  }
+  public refreshArrayDevice() {
+    this.currentDeviceSource.next(this._arrayDevices);
+  }
+  public refreshArrayBills() {
+    this.currentBillSource.next(this._arrayBills);
+  }
+  public refreshBills() {
+    this.currentBillSource.next(this._currentBill);
+  }
+  public refreshSubUser() {
+    this.currentUserSource.next(this._currentSubUser);
+  }
+  public refreshArraySubUser() {
+    this.currentUserSource.next(this._arraySubUser);
+  }
+  public refreshArrayPayment() {
+    this.currentPaymentSource.next(this._arrayPayment);
+  }
+  public refreshPayment() {
+    this.currentPaymentSource.next(this._currentPayment);
+  }
+
+
+
+
 
   public refreshNewUserMessage() {
-
     this.newUserSource.next(this._newUser);
+  }
+
+
+
+  public refreshUserDetails() {
+    this.currentUserSource.next(this._currentUserdetail);
   }
   public refreshOtherMessage() {
     this.otherSource.next(this._otherMessage);
@@ -81,9 +137,7 @@ export class WebsocketDataServiceService implements OnInit {
   public refreshServerEvent() {
     this.eventSource.next(this._server_event);
   }
-  public refreshUserDetails() {
-    this.currentUserSource.next(this._currentUserdetail);
-  }
+
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     // console.log('init');
@@ -703,6 +757,88 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.user = data;
     this.sendMsg();
   }
+  getDevices() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-devices';
+    this.sendMsg();
+  }
+  getDeviceInfo(d) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-device-info';
+    this._message.data.deviceinfo = d;
+    this.sendMsg();
+  }
+  approvePayment(p) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'approve-payment';
+    this._message.data.payment = p;
+    this.sendMsg();
+  }
+  getAllPayment() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-all-paymnet';
+    this.sendMsg();
+  }
+  makePayment(p) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'make-payment';
+    this._message.data.payment = p;
+    this.sendMsg();
+  }
+  registerNewUser(u) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'register-new-user';
+    this._message.data.user = u;
+    this.sendMsg();
+  }
+  registerSaleUser(u) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'register-sale-user';
+    this._message.data.user = u;
+    this.sendMsg();
+  }
+  registerFinacneUser(u) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'register-finance-user';
+    this._message.data.user = u;
+    this.sendMsg();
+  }
+  updateDeviceOwners(d) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'update-devices-owners';
+    this._message.data.deviceinfo = d;
+    this.sendMsg();
+  }
+  updateDevice(d) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'update-devices';
+    this._message.data.deviceinfo = d;
+    this.sendMsg();
+  }
+  getProductionTime() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-production-time';
+    this.sendMsg();
+  }
+  getLatestWorkingStatus() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-latest-working-status';
+    this.sendMsg();
+  }
+
   //  uploadPhoto() {
   //   this._client.data = {};
   //   this._client.data['user'] = {};
