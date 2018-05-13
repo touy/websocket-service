@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { WebsocketService } from './websocket.service';
 import { DOCUMENT } from '@angular/platform-browser';
-import {map} from 'rxjs/Operators'
-let CHAT_URL = 'ws://nonav.ent:6698/'; // ice-maker web service
+import {map, share} from 'rxjs/Operators';
+let CHAT_URL = 'ws://localhost:6698/';
+// let CHAT_URL = 'ws://nonav.net:6698/'; // ice-maker web service
+// let CHAT_URL = 'ws://nonav.net:6688/'; // user-mananagement web service
 
 export interface Message {
   gui: string;
@@ -14,7 +16,6 @@ export interface Message {
   loginip: string;
   data: any;
 }
-
 @Injectable()
 export class ChatService {
   public messages: Subject<Message>;
@@ -34,8 +35,10 @@ export class ChatService {
         }
         // console.log(d+'+++ AB');
         const data = JSON.parse(d);
+        // console.log('return data');
+        // console.log(data);
         return data;
-      }));
+      })).pipe(share());
   }
   seturl(url) {
     CHAT_URL = url;

@@ -40,7 +40,7 @@ export class WebsocketDataServiceService implements OnInit {
   private _arrayBills: any;
   private _arrayPayment: any;
   private _arraySubUser: any;
-
+  public heartbeat_interval: number;
 
 
 
@@ -51,41 +51,17 @@ export class WebsocketDataServiceService implements OnInit {
   public currentUserSource = new BehaviorSubject<any>(this._currentUserdetail);
   public eventSource = new BehaviorSubject<any>(this._server_event);
   public otherSource = new BehaviorSubject<any>(this._otherMessage);
-
+  private timeOut_runner: NodeJS.Timer;
   public currentDeviceSource = new BehaviorSubject<any>(this._currentDevice);
   public currentPaymentSource = new BehaviorSubject<any>(this._currentPayment);
   public currentSubUserSource = new BehaviorSubject<any>(this._currentSubUser);
   public currentBillSource = new BehaviorSubject<any>(this._currentBill);
   // private currentMessage = this.clientSource.asObservable();
   // private serverEvent = this.eventSource.asObservable();
-  heartbeat_interval = setInterval(() => {
-    console.log(this._client);
-    if (!this._client.gui) {
-      console.log('ERROR no shake hands');
-      return;
-    }
-    const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
-    // if (this.heartbeat_interval === undefined) {
-    //   return;
-    // }
-    // console.log('first heart beat' + firstHeartBeat);
-    if (firstHeartBeat !== this.heartbeat_interval + '' && firstHeartBeat) {
-      this.stopService();
-      return;
-    }
-    // console.log('heartbeat ' + this.heartbeat_interval);
-    sessionStorage.setItem('firstHeartBeat', this.heartbeat_interval + '');
-    // // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
-    this._message = JSON.parse(JSON.stringify(this._client));
-    this._message.data = {};
-    this._message.data['user'] = {};
-    this._message.data['command'] = 'heart-beat';
-    this._message.data['command2'] = 'interval ' + this.heartbeat_interval;
-    this.sendMsg();
-  }, 1000 * 60);
-  timeOut_runner = setTimeout(() => {
-    this.shakeHands();
-  }, 1000 * 1);
+
+  // timeOut_runner = setTimeout(() => {
+  //   this.shakeHands();
+  // }, 1000 * 1);
   public refreshSubUserMessage() {
     this.currentSubUserSource.next(this._currentSubUser);
   }
@@ -151,271 +127,294 @@ export class WebsocketDataServiceService implements OnInit {
     chatService.messages.subscribe(msg => {
       const d = msg;
       // // alert(d);
-      if (d !== undefined) {
-        if (d['command'] !== undefined) {
-          console.log('changed from server');
-          // console.log(d['command'] + d['command2']);
-          this._server_event.push(d);
-          this.refreshServerEvent();
-          // console.log(d);
-          switch (d['command']) {
-            case 'notification-changed':
-              console.log(d);
-              if (d['client']['data']['command'] === 'send-sms') {
-                console.log(d['client'].data.message);
-              }
-              if (d['client']['data']['command'] === 'received-sms') {
-                console.log(d['client'].data.message);
-                if (d['client']['data']['sms'] !== undefined) {
-                  console.log('SMS');
-                  console.log(d['client']['data']['res'].resultDesc);
-                  console.log(d['client']['data']['res'].msisdn);
-                }
-              }
-              if (d['client']['data']['command'] === 'send-topup') {
-                console.log(d['client'].data.message);
-              }
-              if (d['client']['data']['command'] === 'received-topup') {
-                console.log(d['client'].data.message);
-                if (d['client']['data']['topup'] !== undefined) {
-                  console.log('topup');
-                  console.log(d['client']['data']['res'].resultDesc);
-                  console.log(d['client']['data']['res'].msisdn);
-                }
-              }
-              if (d['client']['data']['command'] === 'send-check-balance') {
-                console.log(d['client'].data.message);
-              }
-              if (d['client']['data']['command'] === 'received-check-balance') {
-                console.log(d['client'].data.message);
-                if (d['client']['data']['checkbalance'] !== undefined) {
-                  console.log('topup');
-                  console.log(d['client']['data']['res'].resultDesc);
-                  console.log(d['client']['data']['res'].msisdn);
-                }
-              }
-              break;
-            case 'error-changed':
-              console.log(d);
-              break;
-            case 'msg-changed':
-              console.log(d['msg']);
-              break;
-            case 'login-changed':
-              console.log(d);
-              break;
-            case 'message-changed':
-              // console.log(d['client']['data']['message']);
-              break;
-            case 'forgot-changed':
-              console.log(d);
-              break;
-            case 'phone-changed':
-              console.log(d);
-              break;
-            case 'secret-changed':
-              console.log(d);
-              break;
-            case 'online-changed':
-              console.log(d);
-              break;
+      try {
+        if (d !== undefined) {
+          if (d['command'] !== undefined) {
 
-            default:
-              break;
-          }
-          // // console.log(msg);
-        } else {
-          this._client = msg;
-          this.refreshClient();
-          // console.log('return from server');
-          console.log(msg);
-          // console.log(this._client.data['command'] + this._client.data['command2']);
-          switch (this._client.data['command']) {
-            case 'heart-beat':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // this._client.data['user'] = u;
-                this.setClient(this._client);
-              }
-              break;
-            case 'ping':
-              // console.log('ping');
-              // // alert(this._client.data['message']);
-              break;
-            case 'login':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // console.log('LOGIN OK');
-                this.setClient(this._client);
-              }
-              break;
-            case 'get-client':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // console.log('get-client OK');
-                this.setClient(this._client);
-              }
-              break;
-            case 'shake-hands':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+            console.log('changed from server');
+            // console.log(d);
+            this._server_event.push(d);
+            this.refreshServerEvent();
+            // console.log(d);
+            switch (d['command']) {
+              case 'notification-changed':
+                console.log(d);
+                if (d['client']['data']['command'] === 'send-sms') {
+                  console.log(d['client'].data.message);
+                }
+                if (d['client']['data']['command'] === 'received-sms') {
+                  console.log(d['client'].data.message);
+                  if (d['client']['data']['sms'] !== undefined) {
+                    console.log('SMS');
+                    console.log(d['client']['data']['res'].resultDesc);
+                    console.log(d['client']['data']['res'].msisdn);
+                  }
+                }
+                if (d['client']['data']['command'] === 'send-topup') {
+                  console.log(d['client'].data.message);
+                }
+                if (d['client']['data']['command'] === 'received-topup') {
+                  console.log(d['client'].data.message);
+                  if (d['client']['data']['topup'] !== undefined) {
+                    console.log('topup');
+                    console.log(d['client']['data']['res'].resultDesc);
+                    console.log(d['client']['data']['res'].msisdn);
+                  }
+                }
+                if (d['client']['data']['command'] === 'send-check-balance') {
+                  console.log(d['client'].data.message);
+                }
+                if (d['client']['data']['command'] === 'received-check-balance') {
+                  console.log(d['client'].data.message);
+                  if (d['client']['data']['checkbalance'] !== undefined) {
+                    console.log('topup');
+                    console.log(d['client']['data']['res'].resultDesc);
+                    console.log(d['client']['data']['res'].msisdn);
+                  }
+                }
+                break;
+              case 'error-changed':
+                console.log(d);
+                break;
+              case 'msg-changed':
+                console.log(d['msg']);
+                break;
+              case 'login-changed':
+                console.log('login-changed');
+                this._client = d['client'];
+                this.refreshClient();
+                break;
+              case 'message-changed':
+                // console.log(d['client']['data']['message']);
+                break;
+              case 'forgot-changed':
+                console.log(d);
+                break;
+              case 'phone-changed':
+                console.log(d);
+                break;
+              case 'secret-changed':
+                console.log(d);
+                break;
+              case 'online-changed':
+                console.log(d);
+                break;
+                case 'msg-changed':
+                console.log(d);
+                break;
+
+              default:
+                break;
+            }
+            // // console.log(msg);
+          } else {
+            this._client = msg;
+            // this.setClient(this._client);
+            this.refreshClient();
+            console.log('return from server client');
+            console.log(this._client);
+            switch (this._client.data['command']) {
+              case 'heart-beat':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  console.log(this._client.data['message']);
+                } else {
+                  // this._client.data['user'] = u;
+                  console.log(this._client.data['message']);
+                  // this.setClient(this._client);
+                }
+                break;
+              case 'ping':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                }
+                break;
+              case 'login':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // console.log('LOGIN OK');
+                  this.setClient(this._client);
+                  this.refreshClient();
+                }
+                break;
+              case 'get-client':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // console.log('get-client OK');
+                  this.setClient(this._client);
+                  this.refreshClient();
+                }
+                break;
+              case 'shake-hands':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client);
+                  console.log(this._client.data['message']);
+                } else {
+                  console.log('shake hands ok');
+                  this.setClient(this._client);
+                  this.refreshClient();
+                }
+                break;
+              case 'logout':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // console.log('LOGOUT OK');
+                  this.setClient(this._client);
+                  this.refreshClient();
+                }
+                break;
+              case 'get-profile':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // console.log(this._client.data['user']);
+                  const u = JSON.parse(JSON.stringify(msg.data['user']));
+                  this._currentUserdetail = u;
+                  // console.log('refesh user details');
+                  this.refreshUserDetails();
+                }
+                break;
+              case 'change-password':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert('change password OK');
+                }
+                break;
+              case 'get-transaction':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert('change password OK');
+                }
+                break;
+              case 'check-transaction':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert('change password OK');
+                }
+                break;
+              case 'check-forgot':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert(this._client.data['message']);
+                }
+                break;
+              case 'reset-forgot':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert(this._client.data['message']);
+                }
+                break;
+              case 'submit-forgot':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert(this._client.data['message']);
+                  this._currentUserdetail = this._client.data['user'];
+                  this.refreshUserDetails();
+                }
+                break;
+              case 'get-user-gui':
+                // console.log('here get user gui ');
                 // // console.log(this._client);
-                // console.log(this._client.data['message']);
-              } else {
-                // console.log('shake hands ok');
-                this.setClient(this._client);
-              }
-              break;
-            case 'logout':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // console.log('LOGOUT OK');
-                this.setClient(this._client);
-              }
-              break;
-            case 'get-profile':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // console.log(this._client.data['user']);
-                const u = JSON.parse(JSON.stringify(msg.data['user']));
-                this._currentUserdetail = u;
-                // console.log('refesh user details');
-                this.refreshUserDetails();
-              }
-              break;
-            case 'change-password':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert('change password OK');
-              }
-              break;
-            case 'get-transaction':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert('change password OK');
-              }
-              break;
-            case 'check-transaction':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert('change password OK');
-              }
-              break;
-            case 'check-forgot':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert(this._client.data['message']);
-              }
-              break;
-            case 'reset-forgot':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert(this._client.data['message']);
-              }
-              break;
-            case 'submit-forgot':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert(this._client.data['message']);
-                this._currentUserdetail = this._client.data['user'];
-                this.refreshUserDetails();
-              }
-              break;
-            case 'get-user-gui':
-              // console.log('here get user gui ');
-              // // console.log(this._client);
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert(this._client.data['user'].gui);
-              }
-              break;
-            case 'check-phonenumber':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                // // alert(this._client.data['user'].gui);
-                this._newUser.data = this._client.data;
-                this.refreshNewUserMessage();
-              }
-              break;
-            case 'check-username':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                this._newUser.data = this._client.data;
-                this.refreshNewUserMessage();
-              }
-              break;
-            case 'check-secret':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                this._newUser.data = this._client.data;
-                this.refreshNewUserMessage();
-              }
-              break;
-            case 'get-secret':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                this._newUser.data = this._client.data;
-                this.refreshNewUserMessage();
-              }
-              break;
-            case 'register':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                this._newUser.data = this._client.data;
-                this.refreshNewUserMessage();
-              }
-              break;
-            case 'send-confirm-phone-sms':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                this._currentUserdetail = this._client.data['user'];
-                this.refreshUserDetails();
-              }
-              break;
-            case 'check-confirm-phone-sms':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                this._currentUserdetail = this._client.data['user'];
-                this.refreshUserDetails();
-              }
-              break;
-            case 'update-confirm-phone-sms':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                console.log(this._client.data['message']);
-              }
-              break;
-            default:
-              break;
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert(this._client.data['user'].gui);
+                }
+                break;
+              case 'check-phonenumber':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  // // alert(this._client.data['user'].gui);
+                  this._newUser.data = this._client.data;
+                  this.refreshNewUserMessage();
+                }
+                break;
+              case 'check-username':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  this._newUser.data = this._client.data;
+                  this.refreshNewUserMessage();
+                }
+                break;
+              case 'check-secret':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  this._newUser.data = this._client.data;
+                  this.refreshNewUserMessage();
+                }
+                break;
+              case 'get-secret':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  this._newUser.data = this._client.data;
+                  this.refreshNewUserMessage();
+                }
+                break;
+              case 'register':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  this._newUser.data = this._client.data;
+                  this.refreshNewUserMessage();
+                }
+                break;
+              case 'send-confirm-phone-sms':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  this._currentUserdetail = this._client.data['user'];
+                  this.refreshUserDetails();
+                }
+                break;
+              case 'check-confirm-phone-sms':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  this._currentUserdetail = this._client.data['user'];
+                  this.refreshUserDetails();
+                }
+                break;
+              case 'update-confirm-phone-sms':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                }
+                break;
+              default:
+                break;
+            }
+            // console.log(this.heartbeat_interval);
+            // console.log(this._client);
+            // if (evt.data != '.') $('#output').append('<p>'+evt.data+'</p>');
           }
-          // console.log(this.heartbeat_interval);
-          // console.log(this._client);
-          // if (evt.data != '.') $('#output').append('<p>'+evt.data+'</p>');
+        } else {
+          // alert('data empty');
         }
-      } else {
-        // alert('data empty');
+        // // console.log('current client');
+      } catch (error) {
+        console.log(error);
+        sessionStorage.clear();
       }
-      // // console.log('current client');
+
     });
+    this.timeOut_runner = setTimeout(() => {
+      this.shakeHands();
+    }, 1000 * 1);
   }
   changeMessage(message: Message) {
     // console.log(message.data.message);
@@ -454,6 +453,8 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data['user'] = {};
     this._message.data['command'] = 'ping';
     this._message.data.transaction = this.createTransaction();
+    // alert('PING');
+
     this.sendMsg();
   }
   get_user_gui() {
@@ -466,10 +467,38 @@ export class WebsocketDataServiceService implements OnInit {
     this.sendMsg();
     // } else { return // alert('login first'); }
   }
-  stopService() {
-    clearInterval(this.heartbeat_interval);
+  stopService(hb) {
+    clearInterval(hb);
     // delete this.heartbeat_interval;
   }
+
+  heartbeat() {
+    console.log(this._client);
+    if (!this._client.gui) {
+      console.log('ERROR no shake hands');
+      return;
+    }
+    const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
+    // if (this.heartbeat_interval === undefined) {
+    //   return;
+    // }
+    // console.log('first heart beat' + firstHeartBeat);
+    if (firstHeartBeat !== this.heartbeat_interval + '' && firstHeartBeat) {
+      this.stopService(this.heartbeat_interval);
+      return;
+    }
+    // console.log('heartbeat ' + this.heartbeat_interval);
+    sessionStorage.setItem('firstHeartBeat', this.heartbeat_interval + '');
+    // // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data['user'] = {};
+    this._message.data['command'] = 'heart-beat';
+    this._message.data['command2'] = 'interval ' + this.heartbeat_interval;
+    this.sendMsg();
+  }
+
+
   shakeHands() {
     if (!this._client.gui || this._client.gui === undefined) {
       this.getClient();
@@ -481,13 +510,18 @@ export class WebsocketDataServiceService implements OnInit {
       return;
     }
     sessionStorage.setItem('firstHandShake', '1');
-    // console.log('before shakehands' + JSON.stringify(this._client));
-    if (!this._client.gui || this._client.gui === undefined) {
-      this._message = JSON.parse(JSON.stringify(this._client));
-      this._message.data['command'] = 'shake-hands';
-      this._message.data.transaction = this.createTransaction();
-      this.sendMsg();
-    }
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data['command'] = 'shake-hands';
+    this._message.data.transaction = this.createTransaction();
+    // console.log('before shakehands' + JSON.stringify(this._message));
+    this.sendMsg();
+    // if (!this._client.gui || this._client.gui === undefined) {
+    //   this._message = JSON.parse(JSON.stringify(this._client));
+    //   this._message.data['command'] = 'shake-hands';
+    //   this._message.data.transaction = this.createTransaction();
+    //   console.log('before shakehands' + JSON.stringify(this._message));
+    //   this.sendMsg();
+    // }
     // // alert('shake handds');
   }
 
@@ -495,7 +529,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['command'] = 'login';
     this._message.data.user = loginuser;
-    // // alert(JSON.stringify(this._message));
+    // alert(JSON.stringify(this._message));
     this._message.data.transaction = this.createTransaction();
     this.sendMsg();
   }

@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, OnDestroy {
       // }
     }));
     this._subs.push(this.websocketDataServiceService.eventSource.subscribe(events => {
-      // this._server_event.push(events);
+      this._server_event = events;
       this.readServerEvent(events);
       // this._server_event.lastIndexOf()
     }));
@@ -85,6 +85,8 @@ export class AppComponent implements OnInit, OnDestroy {
     this._subs.push(this.websocketDataServiceService.currentSubUserSource.subscribe(msg => {
       this.readSubUser(msg);
     }));
+    // tslint:disable-next-line:max-line-length
+    this.websocketDataServiceService.heartbeat_interval = setInterval(this.websocketDataServiceService.heartbeat.bind(this.websocketDataServiceService), 1000 * 30);
 
   }
   //// END WEBSOCKET LAUNCHING
@@ -125,12 +127,12 @@ export class AppComponent implements OnInit, OnDestroy {
   loadClient() {
     sessionStorage.setItem('firstHandShake', '');
     sessionStorage.setItem('firstHeartBeat', '');
-    if (!this._client.gui || this._client.gui === undefined) {
-      this._client = this.websocketDataServiceService.getClient();
-      console.log('client loaded');
-    } else {
-      // this.saveClient();
-    }
+    // if (!this._client.gui || this._client.gui === undefined) {
+    this._client = this.websocketDataServiceService.getClient();
+    console.log('client loaded');
+    // } else {
+    // this.saveClient();
+    // }
   }
   /// INIT FUNCTIONS
 
@@ -163,7 +165,8 @@ export class AppComponent implements OnInit, OnDestroy {
     try {
       if (c !== undefined) {
         this._client = c;
-        this.saveClient();
+        // this.saveClient();
+        console.log(c);
         switch (this._client.data['command']) {
           case 'heart-beat':
             if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
@@ -174,8 +177,11 @@ export class AppComponent implements OnInit, OnDestroy {
             }
             break;
           case 'ping':
-            console.log('ping OK');
-            // // alert(this._client.data['message']);
+            if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+              console.log(this._client.data['message']);
+            } else {
+              console.log(this._client.data['message']);
+            }
             break;
           case 'upload':
             if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
@@ -377,8 +383,10 @@ export class AppComponent implements OnInit, OnDestroy {
     }
   }
   readServerEvent(event: any): any {
+
     if (event !== undefined) {
       const d = this._server_event[this._server_event.length - 1];
+      console.log(d);
       if (d !== undefined) {
         // this._server_event.push(event);
         console.log('changed from server');
@@ -441,6 +449,9 @@ export class AppComponent implements OnInit, OnDestroy {
               console.log(d);
               break;
             case 'online-changed':
+              console.log(d);
+              break;
+            case 'msg-changed':
               console.log(d);
               break;
             case 'send-sms':
@@ -538,9 +549,10 @@ export class AppComponent implements OnInit, OnDestroy {
   ping_test() {
     // this._client.data.transaction = this.createTransaction(); // NEED TO BE DONE BEOFORE SEND MESSAGE
     // this.websocketDataServiceService.refreshClient();
-    this.websocketDataServiceService.ping_test();
     this._client.data.message += ' HERE in app component';
-    console.log(this._client);
+    // console.log(this._client);
+    this.websocketDataServiceService.ping_test();
+
   }
 
   login() {

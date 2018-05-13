@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';  // <<<< import it here
 import { WebsocketService } from '../websocket.service';
@@ -9,7 +9,7 @@ import { WebsocketDataServiceService } from '../websocket-data-service.service';
   templateUrl: './ice-maker.component.html',
   styleUrls: ['./ice-maker.component.css']
 })
-export class IceMakerComponent implements OnInit {
+export class IceMakerComponent implements OnInit, OnDestroy {
   private _message: Message;
   private _newUser: any = {};
   private _userDetailsStr = '';
@@ -119,14 +119,15 @@ export class IceMakerComponent implements OnInit {
     this.websocketDataServiceService.setClient(this._client);
   }
   loadClient() {
+    console.log('loading clietn');
     sessionStorage.setItem('firstHandShake', '');
     sessionStorage.setItem('firstHeartBeat', '');
-    if (!this._client.gui || this._client.gui === undefined) {
+    // if (!this._client.gui || this._client.gui === undefined) {
       this._client = this.websocketDataServiceService.getClient();
       console.log('client loaded');
-    } else {
-      // this.saveClient();
-    }
+    // } else {
+    //   // this.saveClient();
+    // }
   }
   /// INIT FUNCTIONS
 
