@@ -81,7 +81,8 @@ export class IceMakerComponent implements OnInit, OnDestroy {
     this._subs.push(this.websocketDataServiceService.currentSubUserSource.subscribe(msg => {
       this.readSubUser(msg);
     }));
-
+    // tslint:disable-next-line:max-line-length
+    this.websocketDataServiceService.heartbeat_interval = setInterval(this.websocketDataServiceService.heartbeat.bind(this.websocketDataServiceService), 1000 * 30);
   }
   //// END WEBSOCKET LAUNCHING
 

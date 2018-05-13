@@ -473,7 +473,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
 
   heartbeat() {
-    console.log(this._client);
+    this.getClient();
     if (!this._client.gui) {
       console.log('ERROR no shake hands');
       return;
