@@ -124,8 +124,8 @@ export class IceMakerComponent implements OnInit, OnDestroy {
     sessionStorage.setItem('firstHandShake', '');
     sessionStorage.setItem('firstHeartBeat', '');
     // if (!this._client.gui || this._client.gui === undefined) {
-      this._client = this.websocketDataServiceService.getClient();
-      console.log('client loaded');
+    this._client = this.websocketDataServiceService.getClient();
+    console.log('client loaded');
     // } else {
     //   // this.saveClient();
     // }
@@ -163,6 +163,14 @@ export class IceMakerComponent implements OnInit, OnDestroy {
         this._client = c;
         this.saveClient();
         switch (this._client.data['command']) {
+          case 'get-devices':
+            if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+              console.log(this._client.data['message']);
+            } else {
+              this._arrayDevices = this._client.data.deviceinfo;
+              console.log('heart beat ok');
+            }
+            break;
           case 'heart-beat':
             if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
               console.log(this._client.data['message']);
@@ -789,6 +797,7 @@ export class IceMakerComponent implements OnInit, OnDestroy {
 
   getDevices() {
     if (this._client.logintoken) {
+      // 
       this.websocketDataServiceService.getDevices();
     } else {
       alert('Please login first');
@@ -828,6 +837,9 @@ export class IceMakerComponent implements OnInit, OnDestroy {
   updateDevice() {
     const d = this._currentDevice;
     this.websocketDataServiceService.updateDevice(d);
+  }
+  getSubUsers() {
+    this.websocketDataServiceService.getSubUsers();
   }
   getProductionTime() {
     this.websocketDataServiceService.getProductionTime();

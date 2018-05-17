@@ -199,7 +199,7 @@ export class WebsocketDataServiceService implements OnInit {
               case 'online-changed':
                 console.log(d);
                 break;
-                case 'msg-changed':
+              case 'msg-changed':
                 console.log(d);
                 break;
 
@@ -791,6 +791,16 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.user = data;
     this.sendMsg();
   }
+
+
+  getSubUsers() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-sub-users';
+    this.sendMsg();
+  }
+
   getDevices() {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
