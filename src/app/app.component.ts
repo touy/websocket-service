@@ -86,7 +86,7 @@ export class AppComponent implements OnInit, OnDestroy {
       this.readSubUser(msg);
     }));
     // tslint:disable-next-line:max-line-length
-    this.websocketDataServiceService.heartbeat_interval = setInterval(this.websocketDataServiceService.heartbeat.bind(this.websocketDataServiceService), 1000 * 60);
+    // this.websocketDataServiceService.heartbeat_interval = setInterval(this.websocketDataServiceService.heartbeat.bind(this.websocketDataServiceService), 1000 * 60);
 
   }
   //// END WEBSOCKET LAUNCHING
