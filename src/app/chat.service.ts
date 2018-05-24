@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { WebsocketService } from './websocket.service';
 import { DOCUMENT } from '@angular/platform-browser';
-import {map, share} from 'rxjs/Operators';
+import { map, share } from 'rxjs/Operators';
+import { Buffer } from 'buffer';
 let CHAT_URL = 'ws://localhost:6698/';
 // let CHAT_URL = 'ws://nonav.net:6698/'; // ice-maker web service
 // let CHAT_URL = 'ws://nonav.net:6688/'; // user-mananagement web service
@@ -26,15 +27,31 @@ export class ChatService {
         // const buf = JSON.stringify(response.data);
         // console.log(response.data);
         let d;
+        let data;
         // console.log();
         if (typeof (response.data) !== 'string') {
+          // console.log(response.data);
           d = this.ab2str(response.data);
+          try {
+            data = JSON.parse(Buffer.from(d, 'base64').toString());
+          } catch (error) {
+            try {
+              data = JSON.parse(d);
+            } catch (error) {
+              console.log(error);
+            }
+
+          }
         } else {
           d = response.data;
+          console.log(d);
+          data = d;
           // console.log('here string');
         }
         // console.log(d+'+++ AB');
-        const data = JSON.parse(d);
+
+
+        // const data = JSON.parse(response.data.tostring('utf8'));
         // console.log('return data');
         // console.log(data);
         return data;

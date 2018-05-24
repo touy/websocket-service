@@ -39,7 +39,7 @@ export class WebsocketService {
             this.create(this.url);
           }
           // console.log(data);
-          const buf = Buffer.from(JSON.stringify(data));
+          const buf = Buffer.from(Buffer.from(JSON.stringify(data)).toString('base64'));
           this.ws.send(buf);
         }
       }

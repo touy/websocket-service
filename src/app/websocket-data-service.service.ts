@@ -108,7 +108,7 @@ export class WebsocketDataServiceService implements OnInit {
     this.otherSource.next(this._otherMessage);
   }
   public refreshClient() {
-    this.clientSource.next(this._client);
+   this.clientSource.next(this._client);
   }
   public refreshServerEvent() {
     this.eventSource.next(this._server_event);
@@ -210,7 +210,7 @@ export class WebsocketDataServiceService implements OnInit {
           } else {
             this._client = msg;
             // this.setClient(this._client);
-            this.refreshClient();
+            // this.refreshClient();
             console.log('return from server client');
             console.log(this._client);
             switch (this._client.data['command']) {
@@ -427,7 +427,7 @@ export class WebsocketDataServiceService implements OnInit {
                 this.refreshCurrentDevice();
                 break;
               case 'get-device-info':
-              this._currentDevice = this._client.data.deviceinfo;
+                this._currentDevice = this._client.data.deviceinfo;
                 this.refreshCurrentDevice();
                 break;
               default:
@@ -449,6 +449,7 @@ export class WebsocketDataServiceService implements OnInit {
       this._client.data.command = '';
       this._client.data.message = '';
     });
+    console.log('call constructor');
     this.timeOut_runner = setTimeout(() => {
       this.shakeHands();
     }, 1000 * 1);
@@ -480,6 +481,8 @@ export class WebsocketDataServiceService implements OnInit {
     if (c) {
       this._client = c;
     }
+    this._client.data.command = '';
+    this._client.data.message = '';
     sessionStorage.setItem('client', JSON.stringify(this._client));
   }
   ping_test() {
@@ -489,6 +492,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data['user'] = {};
     this._message.data['command'] = 'ping';
+    this._message.data.message = 'ຍັງຈັບສັນຍານ GPS ບໍ່ໄດ້ ເລີຍບໍ່ທັນ ONLINE ແຕ່ໂທໄດ້, ຕັ້ງຄ່າໄດ້ແລ້ວ';
     this._message.data.transaction = this.createTransaction();
     // alert('PING');
 
