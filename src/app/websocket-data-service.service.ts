@@ -79,7 +79,7 @@ export class WebsocketDataServiceService implements OnInit {
     this.currentBillSource.next(this._currentBill);
   }
   public refreshSubUser() {
-    this.currentUserSource.next(this._currentSubUser);
+    this.currentSubUserSource.next(this._currentSubUser);
   }
   public refreshArraySubUser() {
     this.currentUserSource.next(this._arraySubUser);
@@ -404,7 +404,7 @@ export class WebsocketDataServiceService implements OnInit {
                   this.refreshSubUser();
                 }
                 break;
-                case 'update-sub-userinfo':
+              case 'update-sub-userinfo':
                 if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                   // console.log(this._client.data['message']);
                 } else {
@@ -412,7 +412,7 @@ export class WebsocketDataServiceService implements OnInit {
                   this.refreshClient();
                 }
                 break;
-                case 'reset-password-sub-user':
+              case 'reset-password-sub-user':
                 if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                   // console.log(this._client.data['message']);
                 } else {
@@ -829,16 +829,18 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.command = 'get-sub-users';
     this.sendMsg();
   }
-  resetPasswordSubUser() {
+  resetPasswordSubUser(u) {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
+    this._message.data.user = u;
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'reset-password-sub-user';
     this.sendMsg();
   }
-  updateSubUserinfo() {
+  updateSubUserinfo(u) {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
+    this._message.data.user = u;
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'update-sub-userinfo';
     this.sendMsg();
@@ -853,6 +855,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   getDeviceInfo(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-device-info';
     this._message.data.deviceinfo = d;
@@ -860,6 +863,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   approvePayment(p) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'approve-payment';
     this._message.data.payment = p;
@@ -867,12 +871,14 @@ export class WebsocketDataServiceService implements OnInit {
   }
   getAllPayment() {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-all-paymnet';
     this.sendMsg();
   }
   makePayment(p) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'make-payment';
     this._message.data.payment = p;
@@ -880,6 +886,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   registerNewUser(u) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'register-new-user';
     this._message.data.user = u;
@@ -887,6 +894,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   registerSaleUser(u) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'register-sale-user';
     this._message.data.user = u;
@@ -894,6 +902,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   registerFinacneUser(u) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'register-finance-user';
     this._message.data.user = u;
@@ -901,6 +910,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   updateDeviceOwners(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'update-devices-owners';
     this._message.data.deviceinfo = d;
@@ -908,6 +918,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   updateDevice(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'update-devices';
     this._message.data.deviceinfo = d;
@@ -915,12 +926,14 @@ export class WebsocketDataServiceService implements OnInit {
   }
   getProductionTime() {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-production-time';
     this.sendMsg();
   }
   getLatestWorkingStatus() {
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-latest-working-status';
     this.sendMsg();
