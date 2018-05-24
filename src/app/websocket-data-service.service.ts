@@ -395,9 +395,37 @@ export class WebsocketDataServiceService implements OnInit {
                   console.log(this._client.data['message']);
                 }
                 break;
+              case 'get-sub-users':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentSubUser = this._client.data.userinfo;
+                  this.refreshSubUser();
+                }
+                break;
+                case 'update-sub-userinfo':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this.refreshClient();
+                }
+                break;
+                case 'reset-password-sub-user':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  // this._client.data.user = this._client.data.user;
+                  this.refreshClient();
+                  // this.refreshSubUser();
+                }
+                break;
               default:
                 break;
             }
+
             // console.log(this.heartbeat_interval);
             // console.log(this._client);
             // if (evt.data != '.') $('#output').append('<p>'+evt.data+'</p>');
@@ -410,7 +438,8 @@ export class WebsocketDataServiceService implements OnInit {
         console.log(error);
         sessionStorage.clear();
       }
-
+      this._client.data.command = '';
+      this._client.data.message = '';
     });
     this.timeOut_runner = setTimeout(() => {
       this.shakeHands();
@@ -798,6 +827,20 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-sub-users';
+    this.sendMsg();
+  }
+  resetPasswordSubUser() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'reset-password-sub-user';
+    this.sendMsg();
+  }
+  updateSubUserinfo() {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'update-sub-userinfo';
     this.sendMsg();
   }
 
