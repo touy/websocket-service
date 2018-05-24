@@ -422,6 +422,14 @@ export class WebsocketDataServiceService implements OnInit {
                   // this.refreshSubUser();
                 }
                 break;
+              case 'get-devices':
+                this._currentDevice = this._client.data.deviceinfo;
+                this.refreshCurrentDevice();
+                break;
+              case 'get-device-info':
+              this._currentDevice = this._client.data.deviceinfo;
+                this.refreshCurrentDevice();
+                break;
               default:
                 break;
             }
@@ -858,7 +866,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-device-info';
-    this._message.data.deviceinfo = d;
+    this._message.data.device = d;
     this.sendMsg();
   }
   approvePayment(p) {
@@ -913,7 +921,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'update-devices-owners';
-    this._message.data.deviceinfo = d;
+    this._message.data.device = d;
     this.sendMsg();
   }
   updateDevice(d) {
@@ -921,7 +929,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data = {};
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'update-devices';
-    this._message.data.deviceinfo = d;
+    this._message.data.device = d;
     this.sendMsg();
   }
   getProductionTime() {
@@ -939,49 +947,4 @@ export class WebsocketDataServiceService implements OnInit {
     this.sendMsg();
   }
 
-  //  uploadPhoto() {
-  //   this._client.data = {};
-  //   this._client.data['user'] = {};
-  //   var socketServerUrl = 'ws://localhost:6688/';
-  //   var files = [];
-  //   $('input[type=file]').change( (event) {
-  //     files = event.target.files;
-  //     if (files.length == 0) {
-  //       // alert('select files first !');
-  //       return false;
-  //     }
-  //     for (var i = 0; i < files.length; i++) {
-
-  //       var $transfer = $('<div />').addClass('transfer');
-  //       var $progress = $('<div />').addClass('progress')
-  //       var $progressBar = $('<div />').addClass('progressBar');
-  //       $progressBar.append($progress);
-
-  //       $transfer.append($progressBar);
-
-  //       $('#progresses').append($transfer);
-
-  //       // Creates the transfer
-  //       var transfer = new WebSocketFileTransfer({
-  //         url: socketServerUrl,
-  //         file: files[i],
-  //         blockSize: 1024,
-  //         type: WebSocketFileTransfer.binarySupported() ? 'binary' : 'base64',
-  //         $progress: $progress,
-  //         progress:  (event) {
-  //           this.$progress.css('width', event.percentage + '%');
-  //         },
-  //         success:  (event) {
-  //           this.$progress.addClass('finished');
-  //         }
-  //       });
-
-  //       // Starts the transfer
-  //       transfer.start();
-
-  //     }
-
-  //     return false;
-  //   });
-  // }
 }
