@@ -14,6 +14,8 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class WebsocketDataServiceService implements OnInit {
 
   private _title = 'Websocket test';
+  private _selectedMonth;
+  private _selectedYear;
   private _url: string;
   private _message: any;
   private _newUser: any;
@@ -121,6 +123,8 @@ export class WebsocketDataServiceService implements OnInit {
       this._client.data['user'] = {};
     }
     this._message = JSON.parse(JSON.stringify(this._client));
+    this._selectedMonth = new Date().getMonth() + 1;
+    this._selectedYear = new Date().getFullYear;
   }
   constructor(private chatService: ChatService, private sanitizer: DomSanitizer) {
     this._pouch = new PouchDB('_client');
@@ -946,10 +950,20 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.device = d;
     this.sendMsg();
   }
+  selectYear(y) {
+    this._selectedYear = y;
+  }
 
+  selectMonth(m) {
+    this._selectedMonth = m;
+  }
   setInfoForGetProductionTime(d) {
-    d.year = new Date().getFullYear;
-    d.month = new Date().getMonth() + 1;
+    if (!this._selectedYear) {
+      d.year = new Date().getFullYear;
+    }
+    if (!this._selectedMonth) {
+      d.month = new Date().getMonth() + 1;
+    }
     d.day = new Date().getDate();
     d.dates = this.daysInMonth(d.month, d.year);
 
@@ -968,8 +982,9 @@ export class WebsocketDataServiceService implements OnInit {
       const element = this._message.data.dates - index;
       if (element === 0) { break; }
       setTimeout(() => {
-        if (new Date().getDate() >= element) {
-          this._message.data.day = element;
+        const e = element;
+        if (new Date().getDate() >= e) {
+          this._message.data.day = e;
         }
         this.sendMsg();
       }, 2000);
