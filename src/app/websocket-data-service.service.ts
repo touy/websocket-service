@@ -108,7 +108,7 @@ export class WebsocketDataServiceService implements OnInit {
     this.otherSource.next(this._otherMessage);
   }
   public refreshClient() {
-   this.clientSource.next(this._client);
+    this.clientSource.next(this._client);
   }
   public refreshServerEvent() {
     this.eventSource.next(this._server_event);
@@ -426,6 +426,10 @@ export class WebsocketDataServiceService implements OnInit {
                 this._currentDevice = this._client.data.deviceinfo;
                 this.refreshCurrentDevice();
                 break;
+              case 'get-devices-owner':
+                this._currentDevice = this._client.data.deviceinfo;
+                this.refreshCurrentDevice();
+                break;
               case 'get-device-info':
                 this._currentDevice = this._client.data.deviceinfo;
                 this.refreshCurrentDevice();
@@ -481,8 +485,6 @@ export class WebsocketDataServiceService implements OnInit {
     if (c) {
       this._client = c;
     }
-    this._client.data.command = '';
-    this._client.data.message = '';
     sessionStorage.setItem('client', JSON.stringify(this._client));
   }
   ping_test() {
@@ -555,14 +557,14 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data['command'] = 'shake-hands';
     this._message.data.transaction = this.createTransaction();
     // console.log('before shakehands' + JSON.stringify(this._message));
-    this.sendMsg();
-    // if (!this._client.gui || this._client.gui === undefined) {
-    //   this._message = JSON.parse(JSON.stringify(this._client));
-    //   this._message.data['command'] = 'shake-hands';
-    //   this._message.data.transaction = this.createTransaction();
-    //   console.log('before shakehands' + JSON.stringify(this._message));
-    //   this.sendMsg();
-    // }
+    // this.sendMsg();
+    if (!this._client.gui || this._client.gui === undefined) {
+      this._message = JSON.parse(JSON.stringify(this._client));
+      this._message.data['command'] = 'shake-hands';
+      this._message.data.transaction = this.createTransaction();
+      console.log('before shakehands' + JSON.stringify(this._message));
+      this.sendMsg();
+    }
     // // alert('shake handds');
   }
 
@@ -865,6 +867,14 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.command = 'get-devices';
     this.sendMsg();
   }
+  getDevicesOwner(u) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.user = u;
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-devices-owner';
+    this.sendMsg();
+  }
   getDeviceInfo(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
@@ -936,12 +946,35 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.device = d;
     this.sendMsg();
   }
-  getProductionTime() {
+
+  setInfoForGetProductionTime(d) {
+    d.year = new Date().getFullYear;
+    d.month = new Date().getMonth() + 1;
+    d.day = new Date().getDate();
+    d.dates = this.daysInMonth(d.month, d.year);
+
+  }
+  daysInMonth(month, year) {
+    return new Date(year, month, 0).getDate();
+  }
+  getProductionTime(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
+    this._message.data.device = d;
+    this.setInfoForGetProductionTime(this.setInfoForGetProductionTime(this._message.data));
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-production-time';
-    this.sendMsg();
+    for (let index = 0; index <= this._message.data.dates; index++) {
+      const element = this._message.data.dates - index;
+      if (element === 0) { break; }
+      setTimeout(() => {
+        if (new Date().getDate() >= element) {
+          this._message.data.day = element;
+        }
+        this.sendMsg();
+      }, 2000);
+    }
+
   }
   getLatestWorkingStatus() {
     this._message = JSON.parse(JSON.stringify(this._client));
