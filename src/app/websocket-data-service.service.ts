@@ -42,7 +42,7 @@ export class WebsocketDataServiceService implements OnInit {
   private _arrayBills: any;
   private _arrayPayment: any;
   private _arraySubUser: any;
-  public heartbeat_interval: number;
+  // public heartbeat_interval: number;
 
 
 
@@ -218,15 +218,15 @@ export class WebsocketDataServiceService implements OnInit {
             console.log('return from server client');
             console.log(this._client);
             switch (this._client.data['command']) {
-              case 'heart-beat':
-                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                  console.log(this._client.data['message']);
-                } else {
-                  // this._client.data['user'] = u;
-                  console.log(this._client.data['message']);
-                  // this.setClient(this._client);
-                }
-                break;
+              // case 'heart-beat':
+              //   if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+              //     console.log(this._client.data['message']);
+              //   } else {
+              //     // this._client.data['user'] = u;
+              //     console.log(this._client.data['message']);
+              //     // this.setClient(this._client);
+              //   }
+              //   break;
               case 'ping':
                 if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                   console.log(this._client.data['message']);
@@ -519,31 +519,31 @@ export class WebsocketDataServiceService implements OnInit {
     // delete this.heartbeat_interval;
   }
 
-  heartbeat() {
-    this.getClient();
-    if (!this._client.gui) {
-      console.log('ERROR no shake hands');
-      return;
-    }
-    const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
-    // if (this.heartbeat_interval === undefined) {
-    //   return;
-    // }
-    // console.log('first heart beat' + firstHeartBeat);
-    if (firstHeartBeat !== this.heartbeat_interval + '' && firstHeartBeat) {
-      this.stopService(this.heartbeat_interval);
-      return;
-    }
-    // console.log('heartbeat ' + this.heartbeat_interval);
-    sessionStorage.setItem('firstHeartBeat', this.heartbeat_interval + '');
-    // // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
-    this._message = JSON.parse(JSON.stringify(this._client));
-    this._message.data = {};
-    this._message.data['user'] = {};
-    this._message.data['command'] = 'heart-beat';
-    this._message.data['command2'] = 'interval ' + this.heartbeat_interval;
-    this.sendMsg();
-  }
+  // heartbeat() {
+  //   this.getClient();
+  //   if (!this._client.gui) {
+  //     console.log('ERROR no shake hands');
+  //     return;
+  //   }
+  //   const firstHeartBeat = sessionStorage.getItem('firstHeartBeat');
+  //   // if (this.heartbeat_interval === undefined) {
+  //   //   return;
+  //   // }
+  //   // console.log('first heart beat' + firstHeartBeat);
+  //   if (firstHeartBeat !== this.heartbeat_interval + '' && firstHeartBeat) {
+  //     this.stopService(this.heartbeat_interval);
+  //     return;
+  //   }
+  //   // console.log('heartbeat ' + this.heartbeat_interval);
+  //   sessionStorage.setItem('firstHeartBeat', this.heartbeat_interval + '');
+  //   // // alert(sessionStorage.getItem('firstThread') + ' heartbeat');
+  //   this._message = JSON.parse(JSON.stringify(this._client));
+  //   this._message.data = {};
+  //   this._message.data['user'] = {};
+  //   this._message.data['command'] = 'heart-beat';
+  //   this._message.data['command2'] = 'interval ' + this.heartbeat_interval;
+  //   this.sendMsg();
+  // }
 
 
   shakeHands() {
