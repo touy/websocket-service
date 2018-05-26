@@ -13,6 +13,9 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Injectable()
 export class WebsocketDataServiceService implements OnInit {
 
+  private _currentDay = 0;
+  private _currentMonth = 0;
+  private _currentYear = 0;
   private _title = 'Websocket test';
   private _selectedMonth;
   private _selectedYear;
@@ -52,6 +55,9 @@ export class WebsocketDataServiceService implements OnInit {
   public newUserSource = new BehaviorSubject<Message>(this._newUser);
   public currentUserSource = new BehaviorSubject<any>(this._currentUserdetail);
   public eventSource = new BehaviorSubject<any>(this._server_event);
+  public daySource = new BehaviorSubject<any>(this._currentDay);
+  public monthSource = new BehaviorSubject<any>(this._currentMonth);
+  public yearSource = new BehaviorSubject<any>(this._currentYear);
   public otherSource = new BehaviorSubject<any>(this._otherMessage);
   private timeOut_runner: NodeJS.Timer;
   public currentDeviceSource = new BehaviorSubject<any>(this._currentDevice);
@@ -115,7 +121,15 @@ export class WebsocketDataServiceService implements OnInit {
   public refreshServerEvent() {
     this.eventSource.next(this._server_event);
   }
-
+  public refreshDay() {
+    this.daySource.next(this._currentDay);
+  }
+  public refreshMonth() {
+    this.monthSource.next(this._currentMonth);
+  }
+  public refreshYear() {
+    this.yearSource.next(this._currentYear);
+  }
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnInit() {
     // console.log('init');
@@ -460,13 +474,13 @@ export class WebsocketDataServiceService implements OnInit {
                 break;
 
               case 'get-production-time':
-              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
-                // console.log(this._client.data['message']);
-              } else {
-                console.log(this._client.data['message']);
-                this._currentBill = this._client.data.icemakerbill;
-                this.refreshBills();
-              }
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentBill = this._client.data.icemakerbill;
+                  this.refreshBills();
+                }
 
                 break;
 
@@ -993,7 +1007,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   setInfoForGetProductionTime(d) {
     if (!this._selectedYear) {
-      d.year = new Date().getFullYear;
+      d.year = new Date().getFullYear();
     } else {
       d.year = this._selectedYear;
     }
@@ -1016,17 +1030,23 @@ export class WebsocketDataServiceService implements OnInit {
     this.setInfoForGetProductionTime(this._message.data);
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-production-time';
-    for (let index = 0; index <= this._message.data.dates; index++) {
-      const element = this._message.data.dates - index;
-      if (element === 0) { break; }
-      setTimeout(() => {
-        const e = element;
-        if (new Date().getDate() >= e) {
-          this._message.data.day = e;
-        }
-        this.sendMsg();
-      }, 2000);
+    if (0) {
+      for (let index = 0; index <= this._message.data.dates; index++) {
+        const element = this._message.data.dates - index;
+        if (element === 0) { break; }
+        setTimeout(() => {
+          const e = element;
+          if (new Date().getDate() >= e) {
+            this._message.data.day = e;
+          }
+          this.sendMsg();
+        }, 2000);
+      }
     }
+    this._message.data.day = 2;
+    this._message.data.month = 5;
+    this._message.data.year = 2018;
+    this.sendMsg();
 
   }
   getLatestWorkingStatus() {
