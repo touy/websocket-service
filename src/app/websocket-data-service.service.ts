@@ -427,17 +427,51 @@ export class WebsocketDataServiceService implements OnInit {
                 }
                 break;
               case 'get-devices':
-                this._currentDevice = this._client.data.deviceinfo;
-                this.refreshCurrentDevice();
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentDevice = this._client.data.deviceinfo;
+                  this.refreshCurrentDevice();
+                }
+
                 break;
               case 'get-devices-owner':
-                this._currentDevice = this._client.data.deviceinfo;
-                this.refreshCurrentDevice();
+
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentDevice = this._client.data.deviceinfo;
+                  this.refreshCurrentDevice();
+                }
+
+
                 break;
               case 'get-device-info':
-                this._currentDevice = this._client.data.deviceinfo;
-                this.refreshCurrentDevice();
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentDevice = this._client.data.deviceinfo;
+                  this.refreshCurrentDevice();
+                }
+
                 break;
+
+              case 'get-production-time':
+              if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                // console.log(this._client.data['message']);
+              } else {
+                console.log(this._client.data['message']);
+                this._currentBill = this._client.data.icemakerbill;
+                this.refreshBills();
+              }
+
+                break;
+
+
+
               default:
                 break;
             }
@@ -960,9 +994,13 @@ export class WebsocketDataServiceService implements OnInit {
   setInfoForGetProductionTime(d) {
     if (!this._selectedYear) {
       d.year = new Date().getFullYear;
+    } else {
+      d.year = this._selectedYear;
     }
     if (!this._selectedMonth) {
       d.month = new Date().getMonth() + 1;
+    } else {
+      d.month = this._selectedMonth;
     }
     d.day = new Date().getDate();
     d.dates = this.daysInMonth(d.month, d.year);
@@ -975,7 +1013,7 @@ export class WebsocketDataServiceService implements OnInit {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
     this._message.data.device = d;
-    this.setInfoForGetProductionTime(this.setInfoForGetProductionTime(this._message.data));
+    this.setInfoForGetProductionTime(this._message.data);
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-production-time';
     for (let index = 0; index <= this._message.data.dates; index++) {
