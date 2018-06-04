@@ -39,7 +39,7 @@
   <div class="form-group">
     <label class="col-md-4 control-label" for="secret">secret</label>
     <div class="col-md-2">
-      <input name="secret" [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']" (input)="_newUser.data['secret']=$event.target.value"
+      <input name="secret" [value]="_newUser.data['secret']===undefined? '' : _newUser.data['secret']" (input)="_newUser.data['secret']= 
         (keyup)="checkSecret($event)" maxlength="6" type="number" placeholder="secret" class="form-control input-md" required>
     </div>
   </div>

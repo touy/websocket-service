@@ -840,7 +840,7 @@ export class AppComponent implements OnInit, OnDestroy {
     this.websocketDataServiceService.updateDevice(d);
   }
   getProductionTime() {
-    this.websocketDataServiceService.getProductionTime();
+  //  this.websocketDataServiceService.getProductionTime();
   }
   getLatestWorkingStatus() {
 

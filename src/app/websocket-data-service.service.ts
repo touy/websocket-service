@@ -56,8 +56,8 @@ export class WebsocketDataServiceService implements OnInit {
   public currentUserSource = new BehaviorSubject<any>(this._currentUserdetail);
   public eventSource = new BehaviorSubject<any>(this._server_event);
   public daySource = new BehaviorSubject<any>(this._currentDay);
-  public monthSource = new BehaviorSubject<any>(this._currentMonth);
-  public yearSource = new BehaviorSubject<any>(this._currentYear);
+  public monthSource = new BehaviorSubject<any>(this._selectedMonth);
+  public yearSource = new BehaviorSubject<any>(this._selectedYear);
   public otherSource = new BehaviorSubject<any>(this._otherMessage);
   private timeOut_runner: NodeJS.Timer;
   public currentDeviceSource = new BehaviorSubject<any>(this._currentDevice);
@@ -138,7 +138,7 @@ export class WebsocketDataServiceService implements OnInit {
     }
     this._message = JSON.parse(JSON.stringify(this._client));
     this._selectedMonth = new Date().getMonth() + 1;
-    this._selectedYear = new Date().getFullYear;
+    this._selectedYear = new Date().getFullYear();
   }
   constructor(private chatService: ChatService, private sanitizer: DomSanitizer) {
     this._pouch = new PouchDB('_client');
@@ -480,6 +480,15 @@ export class WebsocketDataServiceService implements OnInit {
                   console.log(this._client.data['message']);
                   this._currentBill = this._client.data.icemakerbill;
                   this.refreshBills();
+                }
+                break;
+                case 'make-payment':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentPayment = this._client.data.payment;
+                  this.refreshPayment();
                 }
 
                 break;
@@ -1031,22 +1040,37 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-production-time';
     if (0) {
+      let i = 0;
       for (let index = 0; index <= this._message.data.dates; index++) {
         const element = this._message.data.dates - index;
-        if (element === 0) { break; }
-        setTimeout(() => {
-          const e = element;
-          if (new Date().getDate() >= e) {
+        if (element === 0) {
+          break;
+        }
+        const e = element;
+        if (
+          new Date().getMonth() + 1 !== this._message.data.month ||
+          new Date().getFullYear() !== this._message.data.year
+        ) {
+          setTimeout(() => {
+            console.log('GET DATA DATE ' + e);
             this._message.data.day = e;
-          }
-          this.sendMsg();
-        }, 2000);
+            this.sendMsg();
+          }, 1000 * (i++ + 1));
+        } else if (new Date().getDate() >= e) {
+          setTimeout(() => {
+            console.log('GET DATA DATE ' + e);
+            this._message.data.day = e;
+            this.sendMsg();
+          }, 1000 * (i++ + 1));
+        } else {
+          console.log('ignore');
+        }
       }
     }
-    this._message.data.day = 2;
-    this._message.data.month = 5;
-    this._message.data.year = 2018;
-    this.sendMsg();
+    // this._message.data.day = 2;
+    // this._message.data.month = 5;
+    // this._message.data.year = 2018;
+    // this.sendMsg();
 
   }
   getLatestWorkingStatus() {
