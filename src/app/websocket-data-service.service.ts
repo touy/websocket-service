@@ -13,6 +13,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Injectable()
 export class WebsocketDataServiceService implements OnInit {
 
+  private _cancelSending: Boolean;
   private _currentDay = 0;
   private _currentMonth = 0;
   private _currentYear = 0;
@@ -147,6 +148,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   constructor(private chatService: ChatService, private sanitizer: DomSanitizer) {
     this._pouch = new PouchDB('_client');
+    this.setCancelSending(false);
     chatService.messages.subscribe(msg => {
       const d = msg;
       // // alert(d);
@@ -1061,6 +1063,12 @@ export class WebsocketDataServiceService implements OnInit {
   daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
   }
+  setCancelSending(v: Boolean) {
+    this._cancelSending = v;
+  }
+  getCancelSending(): Boolean {
+    return this._cancelSending;
+  }
   getProductionTime(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
@@ -1083,13 +1091,17 @@ export class WebsocketDataServiceService implements OnInit {
           setTimeout(() => {
             console.log('GET DATA DATE ' + e);
             this._message.data.day = e;
-            this.sendMsg();
+            if (!this._cancelSending) {
+              this.sendMsg();
+            }
           }, 1000 * (i++ + 1));
         } else if (new Date().getDate() >= e) {
           setTimeout(() => {
             console.log('GET DATA DATE ' + e);
             this._message.data.day = e;
-            this.sendMsg();
+            if (!this._cancelSending) {
+              this.sendMsg();
+            }
           }, 1000 * (i++ + 1));
         } else {
           console.log('ignore');
