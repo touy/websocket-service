@@ -45,6 +45,7 @@ export class WebsocketDataServiceService implements OnInit {
   private _arrayBills: any;
   private _arrayPayment: any;
   private _arraySubUser: any;
+  private _lastReport: any;
   // public heartbeat_interval: number;
 
 
@@ -64,6 +65,7 @@ export class WebsocketDataServiceService implements OnInit {
   public currentPaymentSource = new BehaviorSubject<any>(this._currentPayment);
   public currentSubUserSource = new BehaviorSubject<any>(this._currentSubUser);
   public currentBillSource = new BehaviorSubject<any>(this._currentBill);
+  public currentLastreport = new BehaviorSubject<any>(this._lastReport);
   // private currentMessage = this.clientSource.asObservable();
   // private serverEvent = this.eventSource.asObservable();
 
@@ -97,6 +99,9 @@ export class WebsocketDataServiceService implements OnInit {
   }
   public refreshPayment() {
     this.currentPaymentSource.next(this._currentPayment);
+  }
+  public refreshLastReport() {
+    this.currentLastreport.next(this._lastReport);
   }
 
 
@@ -482,7 +487,7 @@ export class WebsocketDataServiceService implements OnInit {
                   this.refreshBills();
                 }
                 break;
-                case 'make-payment':
+              case 'make-payment':
                 if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                   // console.log(this._client.data['message']);
                 } else {
@@ -492,8 +497,25 @@ export class WebsocketDataServiceService implements OnInit {
                 }
 
                 break;
+              case 'get-payment-list':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentPayment = this._client.data.payment;
+                  this.refreshPayment();
+                }
 
-
+                break;
+              case 'get-latest-working-status':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._lastReport = this._client.data.lastreport;
+                  this.refreshLastReport();
+                }
+                break;
 
               default:
                 break;
@@ -965,6 +987,13 @@ export class WebsocketDataServiceService implements OnInit {
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'make-payment';
     this._message.data.payment = p;
+    this.sendMsg();
+  }
+  getPaymentList(p) {
+    this._message = JSON.parse(JSON.stringify(this._client));
+    this._message.data = {};
+    this._message.data.transaction = this.createTransaction();
+    this._message.data.command = 'get-payment-list';
     this.sendMsg();
   }
   registerNewUser(u) {
