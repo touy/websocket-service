@@ -13,7 +13,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Injectable()
 export class WebsocketDataServiceService implements OnInit {
 
-  private _cancelSending: Boolean;
+  private _timerOutArray: any[];
   private _currentDay = 0;
   private _currentMonth = 0;
   private _currentYear = 0;
@@ -148,7 +148,7 @@ export class WebsocketDataServiceService implements OnInit {
   }
   constructor(private chatService: ChatService, private sanitizer: DomSanitizer) {
     this._pouch = new PouchDB('_client');
-    this.setCancelSending(false);
+    this.setCancelSending();
     chatService.messages.subscribe(msg => {
       const d = msg;
       // // alert(d);
@@ -481,6 +481,15 @@ export class WebsocketDataServiceService implements OnInit {
                 break;
 
               case 'get-production-time':
+                if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
+                  // console.log(this._client.data['message']);
+                } else {
+                  console.log(this._client.data['message']);
+                  this._currentBill = this._client.data.icemakerbill;
+                  this.refreshBills();
+                }
+                break;
+              case 'get-production-data':
                 if (this._client.data['message'].toLowerCase().indexOf('error') > -1) {
                   // console.log(this._client.data['message']);
                 } else {
@@ -1063,12 +1072,14 @@ export class WebsocketDataServiceService implements OnInit {
   daysInMonth(month, year) {
     return new Date(year, month, 0).getDate();
   }
-  setCancelSending(v: Boolean) {
-    this._cancelSending = v;
+  setCancelSending() {
+    for (let index = 0; index < this._timerOutArray.length; index++) {
+      const element = this._timerOutArray[index];
+      clearTimeout(element);
+    }
+    this._timerOutArray.length = 0;
   }
-  getCancelSending(): Boolean {
-    return this._cancelSending;
-  }
+
   getProductionTime(d) {
     this._message = JSON.parse(JSON.stringify(this._client));
     this._message.data = {};
@@ -1088,21 +1099,18 @@ export class WebsocketDataServiceService implements OnInit {
           new Date().getMonth() + 1 !== this._message.data.month ||
           new Date().getFullYear() !== this._message.data.year
         ) {
-          setTimeout(() => {
-            console.log('GET DATA DATE ' + e);
-            this._message.data.day = e;
-            if (!this._cancelSending) {
+          this._timerOutArray.push(
+            setTimeout(() => {
+              console.log('GET DATA DATE ' + e);
+              this._message.data.day = e;
               this.sendMsg();
-            }
-          }, 1000 * (i++ + 1));
+            }, 1000 * (i++ + 1)));
         } else if (new Date().getDate() >= e) {
-          setTimeout(() => {
+          this._timerOutArray.push(setTimeout(() => {
             console.log('GET DATA DATE ' + e);
             this._message.data.day = e;
-            if (!this._cancelSending) {
-              this.sendMsg();
-            }
-          }, 1000 * (i++ + 1));
+            this.sendMsg();
+          }, 1000 * (i++ + 1)));
         } else {
           console.log('ignore');
         }

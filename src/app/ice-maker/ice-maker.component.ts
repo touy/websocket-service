@@ -841,7 +841,8 @@ export class IceMakerComponent implements OnInit, OnDestroy {
     this.websocketDataServiceService.getSubUsers();
   }
   getProductionTime() {
-    this.websocketDataServiceService.getProductionTime();
+
+    // this.websocketDataServiceService.getProductionTime();
   }
   getLatestWorkingStatus() {
 
