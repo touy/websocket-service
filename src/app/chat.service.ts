@@ -20,7 +20,9 @@ export interface Message {
 @Injectable()
 export class ChatService {
   public messages: Subject<Message>;
+  private wsds: WebsocketService;
   constructor(wsService: WebsocketService) {
+    this.wsds = wsService;
     // CHAT_URL = 'ws://' + document.location.hostname + ':6688';
     this.messages = <Subject<Message>>wsService
       .connect(CHAT_URL).pipe(map((response: MessageEvent): Message => {
@@ -56,6 +58,12 @@ export class ChatService {
         // console.log(data);
         return data;
       })).pipe(share());
+  }
+  close(): void {
+    this.wsds.close();
+  }
+  connect(url: string): void {
+    this.wsds.connect(url);
   }
   seturl(url) {
     CHAT_URL = url;

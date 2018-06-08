@@ -18,7 +18,9 @@ export class WebsocketService {
     }
     return this.subject;
   }
-
+  public close(): void {
+    this.ws.close();
+  }
   private create(url): Rx.Subject<MessageEvent> {
     this.ws = new WebSocket(url);
     this.url = url;

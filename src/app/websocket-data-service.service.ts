@@ -13,7 +13,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 @Injectable()
 export class WebsocketDataServiceService implements OnInit {
 
-  private _timerOutArray: any[];
+  private _timerOutArray: any[] = [];
   private _currentDay = 0;
   private _currentMonth = 0;
   private _currentYear = 0;
@@ -146,9 +146,13 @@ export class WebsocketDataServiceService implements OnInit {
     this._selectedMonth = new Date().getMonth() + 1;
     this._selectedYear = new Date().getFullYear();
   }
+  ngOnClose() {
+    this.chatService.close();
+  }
   constructor(private chatService: ChatService, private sanitizer: DomSanitizer) {
     this._pouch = new PouchDB('_client');
     this.setCancelSending();
+    // this.chatService = chatService;
     chatService.messages.subscribe(msg => {
       const d = msg;
       // // alert(d);
@@ -1087,7 +1091,7 @@ export class WebsocketDataServiceService implements OnInit {
     this.setInfoForGetProductionTime(this._message.data);
     this._message.data.transaction = this.createTransaction();
     this._message.data.command = 'get-production-time';
-    if (0) {
+    if (1) {
       let i = 0;
       for (let index = 0; index <= this._message.data.dates; index++) {
         const element = this._message.data.dates - index;
